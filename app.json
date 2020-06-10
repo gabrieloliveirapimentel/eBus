@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "MyBus",
+    "slug": "projetoMyBusExpo",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.4",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#283593"
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content", 
+      "backgroundColor": "#283593" 
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cefet.projetoMyBusExpo",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.cefet.projetoMyBusExpo",
+      "versionCode": 1.0,
+      "adaptiveIcon": {
+        "backgroundColor": "#283593",
+        "foregroundImage": "./assets/icon.png",
+        "backgroundImage": "./assets/background_icon.png"
+      }
+    },
+    "description": ""
+  }
+}
