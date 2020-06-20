@@ -5,6 +5,14 @@ import { Icon } from "react-native-elements";
 
 import { Container, Form } from "./styles";
 
+export default function InfoTrip ({ navigation }) {
+  return (
+    <View style={{flex: 1}}><Text>Teste</Text></View>
+  );
+}
+
+/*
+
 export class InfoTrip extends React.Component {
   constructor(props) {
     super(props);
@@ -143,3 +151,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 });
+*/

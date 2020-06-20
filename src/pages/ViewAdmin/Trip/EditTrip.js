@@ -6,6 +6,12 @@ import { TextInputMask } from "react-native-masked-text";
 
 import { Container, Form, FormInput } from "./styles";
 
+export default function EditTrip ({ navigation }) {
+  return (
+    <View style={{flex: 1}}><Text>Teste</Text></View>
+  );
+}
+/*
 export class EditTrip extends React.Component {
   constructor(props) {
     super(props);
@@ -185,3 +191,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+*/

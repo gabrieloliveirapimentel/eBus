@@ -1,9 +1,96 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import { Alert, View, StyleSheet, StatusBar, FlatList, Text, ActivityIndicator} from 'react-native';
-import {Button, Header, Body, Right, Fab} from 'native-base';
-import {Icon} from 'react-native-elements';
+import React, {useState, useEffect, useCallback} from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Text,
+} from "react-native";
+import { Fab } from "native-base";
+import { Icon } from "react-native-elements";
 
+import {Container, Header, Tab} from './styles';
+
+export default function ListBus ({ navigation }) {
+  const {idUsuario} = navigation.state.params;
+  const [dataSource, setdataSource] = useState([]);
+  const [loading, setloading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  function thisList(){}
+
+  useEffect( 
+    thisList = () => {
+      setloading(false);
+      fetch('http://192.168.0.17/listBus_api.php', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fk_id_usuario: idUsuario,
+        }),
+      }).then((response) => response.json())
+        .then((responseJson) => {setdataSource(responseJson);}
+      ).catch((error) => {
+        Alert.alert('Erro na conexão', 'Verifique sua internet!');
+        setloading(false);
+      })
+  },[]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setRefreshing(false);
+    thisList();   
+  }, [refreshing]);
+
+  if (loading) {
+    return (
+      <Container>
+        <ActivityIndicator size="large" color="#283593" />
+      </Container>
+    );
+  } else {
+    return (
+      <Container>
+        <Header title="Ônibus" icon="refresh" iconPress={onRefresh}/>
+        <FlatList
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          data={dataSource}
+          renderItem={({item}) => (
+            <Text 
+              onPress={() => navigation.navigate('InfoBus', {
+                placa: item.placa,
+                linha: item.linha, 
+                numVagas: item.num_vagas, 
+                motorista: item.nome, 
+                disponivel: item.disponibilidade
+              })} 
+              style={{fontSize: 18, color: "#000",padding: 10}}>
+              {item.placa}
+            </Text> )}
+          keyExtractor={(item) => item.placa}
+          />
+        <Fab
+          onPress={() => navigation.navigate('NewBus',{idUsuario: idUsuario})}
+          style={{ backgroundColor: "#283593", marginBottom: 50 }}
+          position="bottomRight">
+          <Icon name="add" color="#fff" />
+        </Fab>
+        <Tab 
+          onPress1={() => navigation.navigate('Viagem')} 
+          color1='rgba(255,255,255,0.5)'
+          onPress2={() => {}} 
+          color2='#fff' 
+        />
+    </Container>
+  );
+  }
+}
+
+/*
 export class ListBus extends React.Component {
   constructor(props){
     super(props);
@@ -79,7 +166,11 @@ export class ListBus extends React.Component {
             ItemSeparatorComponent = {this.FlatListItemSeparator}
             renderItem={({item}) => <Text style={styles.FlatListitems}
               
-            onPress={() => {this.props.navigation.navigate('InfoBus',{placa: item.placa, linha: item.linha, num_vagas: item.num_vagas, motorista: item.nome, disponivel: item.disponibilidade})}}>{item.placa} </Text>}
+            onPress={() => {this.props.navigation.navigate('InfoBus',{placa: item.placa,
+               linha: item.linha, 
+               num_vagas: item.num_vagas, 
+               motorista: item.nome, 
+               disponivel: item.disponibilidade})}}>{item.placa} </Text>}
             keyExtractor={(item, index) => index}
             />
           <Fab 
@@ -114,3 +205,4 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
   }
 });
+*/

@@ -1,12 +1,18 @@
 /* eslint-disable prettier/prettier */
 import React from "react";
-import { StyleSheet, ScrollView, Alert, View, StatusBar, Picker} from "react-native";
-import { Button, Text } from "native-base";
+import { StyleSheet, ScrollView, Alert, View, StatusBar} from "react-native";
+import { Button, Text, Picker } from "native-base";
 import * as Font from "expo-font";
 import { TextInputMask } from "react-native-masked-text";
 
 import { Container, Form, FormInput } from "./styles";
 
+export default function NewTrip ({ navigation }) {
+  return (
+    <View style={{flex: 1}}><Text>Teste</Text></View>
+  );
+}
+/*
 export class NewTrip extends React.Component {
   constructor(props) {
     super(props);
@@ -219,3 +225,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+*/

@@ -1,185 +1,129 @@
-import React from 'react';
-import {StyleSheet, ScrollView, View, StatusBar, Alert} from 'react-native';
-import {Button, Text, CheckBox} from 'native-base';
+import React,{useState} from 'react';
+import {ScrollView, Alert} from 'react-native';
+import {CheckBox} from 'native-base';
 
 import {
-    Container,
-    Form,
-    FormInput,
+  BoxView,
+  BoxText,
+  NewContainer,
+  Form,
+  FormInput,
+  SignLink,
+  SubmitButton,
+  TitleCheck,
+  TextCheck
   } from './styles';
 
-export class NewBus extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      placa: '',
-      linha: '',
-      num_vagas: '',
-      disponibilidade: false,
+export default function NewBus ({ navigation }) {
+  const {idUsuario} = navigation.state.params;
+  const [placa, setPlaca] = useState('');
+  const [linha, setLinha] = useState('');
+  const [numVagas, setNumVagas] = useState(0);
+  const [disp, setDisp] = useState(false);
+  const [nome, setNome] = useState('');
+  const [checkBox, setCheckBox] = useState(false);
+  const [checkBox2, setCheckBox2] = useState(false);
 
-      nome: '',
- 
-      checkbox: false,
-      checkbox2: false,
+  function NewBus () {
+    if (placa == '' || linha == '' || numVagas == '' || nome == ''){
+      Alert.alert('Campos em branco', 'Verifique os dados e tente novamente!');
+    } else {
+      fetch('http://mybus.projetoscomputacao.com.br/insertBus_api.php', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fk_id_usuario: idUsuario,
+          placa: placa,
+          linha: linha,
+          num_vagas: numVagas,
+          disponibilidade: disp,
+          nome: nome,
+        }),
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          if (responseJson=='Ônibus cadastrado!'){
+            Alert.alert(responseJson);
+            navigation.goBack();}
+          else{Alert.alert(responseJson);}
+        }).catch((error) => {
+          Alert.alert('Erro na conexão', 'Verifique sua internet!');
+      });
     }
   }
-  CadastrarOnibus = () => {
-
-    if (this.state.placa == '' || this.state.linha == '' || this.state.num_vagas == '' || this.state.nome == ''){
-      Alert.alert('Campos em branco, verifique novamente!');
-    } else{
-        fetch('http://mybus.projetoscomputacao.com.br/inserBus_api.php', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-    
-            placa: this.state.placa,
-            linha: this.state.linha,
-            num_vagas: this.state.num_vagas,
-            disponibilidade: this.state.disponibilidade,
-            
-            nome: this.state.nome,
-          }),
-        })
-          .then((response) => response.json())
-          .then((responseJson) => {
-    
-            if (responseJson=='Ônibus cadastrado!'){
-              Alert.alert(responseJson);
-              this.props.navigation.goBack();}
-            else{Alert.alert(responseJson);}
-            // Showing response message coming from server after inserting records.
-            
-          })
-          .catch((error) => {
-            Alert.alert('Erro na conexão', 'Verifique sua internet!');
-          });
-    }
+  function toggleSwitch() {
+    setCheckBox(true);
+    setCheckBox2(false);
+    setDisp(true);
   }
   
-  toggleSwitch() {
-    this.setState({
-      checkbox: true,
-      checkbox2: false,
-      disponibilidade: true,
-    });
+  function toggleSwitch2() {
+    setCheckBox(false);
+    setCheckBox2(true);
+    setDisp(false);
   }
 
-  toggleSwitch2() {
-    this.setState({
-      checkbox: false,
-      checkbox2: true,
-      disponibilidade: false,
-    });
+  return (
+    <ScrollView animated='false'style={{marginHorizontal: 0}}>
+    <NewContainer>
+      <Form>
+        <FormInput
+          icon3="card-text-outline" 
+          autoCorrect={true}
+          autoCapitalize="sentences"
+          placeholder="Placa"
+          onChangeText={(data) => setPlaca(data)}
+        />          
+        <FormInput
+          icon3="bus" 
+          autoCapitalize="none"
+          keyboardType="number-pad"
+          placeholder="Linha"
+          onChangeText={(data) => setLinha(data)}
+        />  
+        <FormInput
+          icon3="numeric" 
+          autoCapitalize="none"
+          keyboardType="number-pad"
+          placeholder="Número de Vagas"
+          onChangeText={(data) => setNumVagas(data)}
+        />
+        <FormInput
+          icon3="account" 
+          autoCorrect={true}
+          autoCapitalize="sentences"
+          placeholder="Motorista"
+          onChangeText={(data) => setNome(data)}
+        />
+      <BoxView>
+      <TitleCheck>Disponibilidade: </TitleCheck>
+      <BoxText>
+        <CheckBox
+          color="rgba(0,0,255,0.6)"
+          checked={checkBox}
+          onPress={toggleSwitch}
+        />
+        <TextCheck>Disponivel</TextCheck>
+        <CheckBox
+          style={{marginLeft: 20}}
+          color="rgba(0,0,255,0.6)"
+          checked={checkBox2}
+          onPress={toggleSwitch2}
+        />
+        <TextCheck>Indisponivel</TextCheck>
+      </BoxText>
+      </BoxView>
+      </Form>
+      <SignLink>
+        <SubmitButton
+          onPress={NewBus}
+        >Cadastrar
+        </SubmitButton>
+      </SignLink>
+    </NewContainer>  
+    </ScrollView>
+  );
   }
-
-  render (){
-      return (
-            <ScrollView animated='false'style={styles.scrollView}>
-            <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-            <Container>
-              <Form>
-                <Text style={{margin: 5, paddingTop: 10}}>Placa: </Text>
-                <FormInput
-                  autoCorrect={true}
-                  autoCapitalize="sentences"
-                  placeholder="* Placa"
-                  onChangeText={(data) => this.setState({placa: data})}
-                />
-                
-                <Text style={{margin: 5, paddingTop: 10}}>Linha: </Text>
-                <FormInput
-                  autoCapitalize="none"
-                  keyboardType="number-pad"
-                  placeholder="* Linha"
-                  onChangeText={(data) => this.setState({linha: data})}
-                />
-
-                <Text style={{margin: 5, paddingTop: 10}}>Número de vagas: </Text>
-                <FormInput
-                  autoCapitalize="none"
-                  keyboardType="number-pad"
-                  placeholder="* Número de Vagas"
-                  onChangeText={(data) => this.setState({num_vagas: data})}
-                />
-
-                <Text style={{margin: 5, paddingTop: 10}}>Motorista: </Text>
-                <FormInput
-                  autoCorrect={true}
-                  autoCapitalize="sentences"
-                  placeholder="* Motorista"
-                  onChangeText={(data) => this.setState({nome: data})}
-                />
-                
-                <Text style={{margin: 5, paddingTop: 10}}>Disponibilidade: </Text>
-                <View style={styles.checkboxStyle}>  
-                  <CheckBox
-                    style={{marginLeft: 10}}
-                    color="rgba(0,0,255,0.3)"
-                    checked={this.state.checkbox}
-                    onPress={() => this.toggleSwitch()}
-                  />
-
-                  <Text style={styles.text}>Disponivel</Text>
-                  <CheckBox
-                    color="rgba(0,0,255,0.3)"
-                    checked={this.state.checkbox2}
-                    onPress={() => this.toggleSwitch2()}
-                  />
-                  <Text style={styles.text}>Indisponivel</Text>
-                  </View>
-              </Form>
-            
-                <Button style={styles.button}
-                  onPress={this.CadastrarOnibus}
-                  title="Entrar"><Text style={styles.textButton}>Confirmar</Text>
-                </Button>
-
-                <Text style={{marginTop:10, fontSize: 13, marginBottom: 10, color:'#f00'}}>* Campos obrigatórios</Text>
-              </Container>
-          </ScrollView>
-      );
-  }
-}
-
-const styles = StyleSheet.create({
-  scrollView: {
-    marginHorizontal: 0,
-  },
-  button: {
-    height: 40,
-    width: 200,
-    borderRadius: 10,
-    marginTop: 40,
-    justifyContent: 'center',
-    backgroundColor:'#283593',
-  },
-  textButton:{
-    color:'#fff',
-    textTransform:'capitalize',
-    fontSize:16,
-  },
-  textSubmit:{
-    marginTop: 10,
-    marginBottom: 15,
-    justifyContent: 'center',
-    color: '#283593',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  checkboxStyle:{
-      backgroundColor: 'rgba(0, 0, 0, 0.1)',
-      borderRadius: 10,
-      alignItems: 'center',
-      flexDirection: 'row',
-      height: 46,
-  },
-  text:{
-    fontSize: 15,
-    color: 'rgba(0,0,255,0.3)',
-    marginLeft: 25,
-  }
-});
