@@ -11,11 +11,10 @@ export const Container = styled.View`
   align-items: center;
 `;
 
-export const TextInput = styled.TextInput.attrs({
-    placeholderTextColor: 'rgba(0,0,255,0.4)',
-})`
-    flex: 1;
-    font-size: 15px;
-    margin-left: 10px;
-    color: 'rgba(0,0,255,0.8)';
+export const PassContainer = styled.View`
+  height: 46px;
+  width: 46px;
+  justifyContent: center;
+  align-items: center;
+  marginLeft: 8px;
 `;

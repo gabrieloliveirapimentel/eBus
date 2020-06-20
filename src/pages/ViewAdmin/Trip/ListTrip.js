@@ -1,90 +1,142 @@
 /* eslint-disable prettier/prettier */
-import React from "react";
-import {ActivityIndicator, View, StyleSheet, StatusBar, FlatList, Text } from "react-native";
+import React, {useState, useEffect, useCallback} from "react";
 import {
-  Button,
-  Header,
-  Body,
-  Right,
-  Fab,
-} from "native-base";
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  View,
+  Text,
+} from "react-native";
+import { Fab } from "native-base";
 import { Icon } from "react-native-elements";
 
-export class ListTrip extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      fetching_Status: false,
-      refreshing: false,
-      loading: true,
-    };
-  }
+import {Container, Header, Tab} from './styles';
 
-  componentDidMount() {
-    return fetch("http://mybus.projetoscomputacao.com.br/listTrip_api.php")
+export default function ListTrip ({ navigation }) {
+  const {email} = navigation.state.params;
+  const {admin} = navigation.state.params;
+  const [idUsuario, setIDUsuario] = useState(0);
+  const [dataSource, setdataSource] = useState([]);
+  const [loading, setloading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    setloading(false);
+    fetch ('http://mybus.projetoscomputacao.com.br/verificaID_api.php' , {
+      method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+      })
+    }).then((response) => response.json())
+      .then((resultado) => { 
+        setIDUsuario(resultado.id_usuario)
+      }).catch((error) => {
+        Alert.alert('Erro na conexão!', 'Verifique sua internet');
+        setloading(false);
+    })
+  },[]);
+
+  useEffect(() => {
+    fetch("http://mybus.projetoscomputacao.com.br/listTrip_api.php")
       .then((response) => response.json())
       .then((responseJson) => {
-        this.setState(
-          {
-            dataSource: responseJson,
-            fetching_Status: true,
-            refreshing: false,
-            loading: false,
-          },
-          function () {
-            // In this block you can do something with new state.
-          }
-        );
+        setdataSource(responseJson);
+        setloading(false);
       })
       .catch((error) => {
-        Alert.alert('Erro na conexão', 'Verifique sua internet!');
-        this.setState({loading:false, refreshing: false});
+        Alert.alert("erro aqui!");
+        setloading(false);
       });
+
+  }, []);
+
+  function wait(timeout) {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
   }
 
-  refreshList = () => {
-    this.setState(
-      {
-        refreshing: true,
-        fetching_Status: true,
-      },
-      () => {
-        this.componentDidMount();
-      }
-    );
-  };
+  function thisList(){}
 
-  FlatListItemSeparator = () => {
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(1200).then(() => 
+    {setRefreshing(false)
+     thisList();
+    });
+  }, [refreshing]);
+
+  if (loading) {
     return (
-      <View
-        style={{
-          height: 1,
-          width: "100%",
-          backgroundColor: "#f0f0f0",
-        }}
-      />
+      <Container>
+        <ActivityIndicator size="large" color="#283593" />
+      </Container>
     );
-  };
-
-  render() {
-    if (this.state.loading) {
+  } else {
+    if (admin == 1){
       return (
-        <View style={{flex: 1, justifyContent: 'center'}}><ActivityIndicator size="large" color="#283593" /></View>
+        <Container>
+        <Header title="Viagem" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
+          <FlatList
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            data={dataSource}
+            renderItem={({item}) => (
+            <Text onPress={() => Alert.alert(item.id_viagem)} style={{fontSize: 18, color: "#000",padding: 10}}>
+            {item.origem}-{item.destino} ({item.horario})
+            </Text>)}
+            keyExtractor={(item) => item.id_viagem}
+          />
+          <Fab
+            onPress={() => {}}
+            style={{ backgroundColor: "#283593", marginBottom: 50 }}
+            position="bottomRight">
+            <Icon name="add" color="#fff" />
+          </Fab>
+          <Tab 
+            onPress1={() => {}} 
+            color1='#fff' 
+            onPress2={() => navigation.navigate('Onibus',{idUsuario: idUsuario})} 
+            color2='rgba(255,255,255,0.5)' 
+          />
+        </Container>
       );
-    } else {
-      return (
-        <View style={{ flex: 1 }}>
-          <Header title="Menu" isHome={true} style={styles.containerheader}>
-          <StatusBar backgroundColor="#283593" barStyle="light-content" />
-          <Body style={{ paddingLeft: 20 }}>
-            <Text style={styles.textHeader}>Viagem</Text>
-          </Body>
-          <Right>
-            <Button transparent onPress={this.refreshList}>
-              <Icon name="refresh" color="#fff" />
-            </Button>
-          </Right>
-        </Header>
+  } else {
+      return(
+        <Container>
+        <Header title="Viagem" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
+          <FlatList
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            data={dataSource}
+            renderItem={({item}) => (
+            <Text onPress={() => Alert.alert(item.id_viagem)} style={{fontSize: 18, color: "#000",padding: 10}}>
+              {item.origem}-{item.destino} ({item.horario})
+            </Text>)}
+            keyExtractor={(item) => item.id_viagem}
+          />
+          <Fab
+            onPress={() => {}}
+            style={{ backgroundColor: "#283593", marginBottom: 50 }}
+            position="bottomRight">
+            <Icon name="add" color="#fff" />
+          </Fab>
+        </Container>
+      );
+    }
+  }
+}
+
+
+
+
+/* eslint-disable prettier/prettier */
+
+/*
             <FlatList
               refreshing={this.state.refreshing}
               onRefresh={this.refreshList}
@@ -108,6 +160,7 @@ export class ListTrip extends React.Component {
               )}
               keyExtractor={(item, index) => index}
             />
+
           <Fab
             onPress={() => {this.props.navigation.navigate('NewTrip')}}
             style={{ backgroundColor: "#283593" }}
@@ -115,28 +168,5 @@ export class ListTrip extends React.Component {
           >
             <Icon name="add" color="#fff" />
           </Fab>
-      </View>
-    );}
-  }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 1,
-  },
-  containerheader: {
-    backgroundColor: "#283593",
-    paddingTop: 10,
-    height: 70,
-  },
-  FlatListitems: {
-    fontSize: 18,
-    color: "#000",
-    padding: 10,
-  },
-  textHeader: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});
+*/
