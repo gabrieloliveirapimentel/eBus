@@ -1,33 +1,33 @@
-import React from 'react';
-import 'react-native-gesture-handler';
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
-import {Icon} from 'react-native-elements';
+import React from "react";
+import "react-native-gesture-handler";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
+import { Icon } from "react-native-elements";
 
 /* authStack */
-import SignIn from './src/pages/SignIn/SignIn';
-import SignUp from './src/pages/SignUp/SignUp';
-import LostPassword from './src/pages/Password/LostPassword';
-import ChangePassword from './src/pages/Password/ChangePassword';
+import SignIn from "./src/pages/SignIn/SignIn";
+import SignUp from "./src/pages/SignUp/SignUp";
+import LostPassword from "./src/pages/Password/LostPassword";
+import ChangePassword from "./src/pages/Password/ChangePassword";
 
 /* allStack */
-import Profile from './src/pages/Profile/Profile';
-import EditProfile from './src/pages/Profile/EditProfile';
+import Profile from "./src/pages/Profile/Profile";
+import EditProfile from "./src/pages/Profile/EditProfile";
 
 /* userStack */
-import Horario from './src/pages/ViewPassageiro/Horario/Horario';
-import Reserva from './src/pages/ViewPassageiro/Reserva/Reserva';
+import Horario from "./src/pages/ViewPassageiro/Horario/Horario";
+import Reserva from "./src/pages/ViewPassageiro/Reserva/Reserva";
 
 /* adminStack */
-import ListTrip from './src/pages/ViewAdmin/Trip/ListTrip';
-import NewTrip from './src/pages/ViewAdmin/Trip/NewTrip';
-import EditTrip from './src/pages/ViewAdmin/Trip/EditTrip';
-import InfoTrip from './src/pages/ViewAdmin/Trip/InfoTrip';
-import ListBus from './src/pages/ViewAdmin/Bus/ListBus';
-import NewBus from './src/pages/ViewAdmin/Bus/NewBus';
-import EditBus from './src/pages/ViewAdmin/Bus/EditBus';
-import InfoBus from './src/pages/ViewAdmin/Bus/InfoBus';
+import ListTrip from "./src/pages/ViewAdmin/Trip/ListTrip";
+import NewTrip from "./src/pages/ViewAdmin/Trip/NewTrip";
+import EditTrip from "./src/pages/ViewAdmin/Trip/EditTrip";
+import InfoTrip from "./src/pages/ViewAdmin/Trip/InfoTrip";
+import ListBus from "./src/pages/ViewAdmin/Bus/ListBus";
+import NewBus from "./src/pages/ViewAdmin/Bus/NewBus";
+import EditBus from "./src/pages/ViewAdmin/Bus/EditBus";
+import InfoBus from "./src/pages/ViewAdmin/Bus/InfoBus";
 
 console.disableYellowBox = true;
 
@@ -36,78 +36,82 @@ const HorarioStack = createStackNavigator({
   Horario: {
     screen: Horario,
     navigationOptions: {
-      title: 'Horários',
+      title: "Horários",
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
+      headerTintColor: "#fff",
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
-  }
+    },
   },
 });
 
-const MainTabs = createBottomTabNavigator({
-  Reserva: {
-    screen: Reserva,
-    navigationOptions: {
-      headerShown: false,
-      tabBarLabel: 'Reserva',
-      tabBarIcon: ({tintColor, inactiveTintColor}) => (
-      <Icon
-        name="today"
-        color={tintColor}
-        inactiveTintColor={inactiveTintColor}
-      />
-      ),
+const MainTabs = createBottomTabNavigator(
+  {
+    Reserva: {
+      screen: Reserva,
+      navigationOptions: {
+        headerShown: false,
+        tabBarLabel: "Reserva",
+        tabBarIcon: ({ tintColor, inactiveTintColor }) => (
+          <Icon
+            name="today"
+            color={tintColor}
+            inactiveTintColor={inactiveTintColor}
+          />
+        ),
+      },
+    },
+    Horario: {
+      screen: HorarioStack,
+      navigationOptions: {
+        tabBarLabel: "Horários",
+        tabBarIcon: ({ tintColor, inactiveTintColor }) => (
+          <Icon
+            name="access-time"
+            color={tintColor}
+            inactiveTintColor={inactiveTintColor}
+          />
+        ),
+      },
     },
   },
-  Horario: {
-    screen: HorarioStack,
-    navigationOptions: {
-      tabBarLabel: 'Horários',
-      tabBarIcon: ({tintColor, inactiveTintColor}) => (
-      <Icon
-        name="access-time"
-        color={tintColor}
-        inactiveTintColor={inactiveTintColor}
-      />
-      ),
+  {
+    tabBarOptions: {
+      inactiveTintColor: "#9a9ba5",
+      activeTintColor: "#fff",
+      style: { backgroundColor: "#283593" },
     },
-  },
-  },
-  { tabBarOptions: {
-      inactiveTintColor: '#9a9ba5',
-      activeTintColor: '#fff',
-      style: {backgroundColor: '#283593'},
-    },
-  },
+  }
 );
 
-const MainStack = createStackNavigator({
-  Home: {
-    screen: MainTabs,
-    navigationOptions: {headerShown: false},
-  },
-  Profile: {
-    screen: Profile,
-    navigationOptions: {headerShown: false},
-  },
-  EditProfile:{
-    screen: EditProfile,
-    navigationOptions: {
-      title: 'Editar Perfil',
-      headerStyle: {
-        backgroundColor: '#283593',
+const MainStack = createStackNavigator(
+  {
+    Home: {
+      screen: MainTabs,
+      navigationOptions: { headerShown: false },
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: { headerShown: false },
+    },
+    EditProfile: {
+      screen: EditProfile,
+      navigationOptions: {
+        title: "Editar Perfil",
+        headerStyle: {
+          backgroundColor: "#283593",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
       },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-      fontWeight: 'bold',
-      },
-    }
-  }
-  }, {initialRouteName: 'Home'},
+    },
+  },
+  { initialRouteName: "Home" }
 );
 
 /*admin Navigation */
@@ -115,107 +119,154 @@ const MainStack = createStackNavigator({
 const ViagemStack = createStackNavigator({
   Viagem: {
     screen: ListTrip,
-    navigationOptions: {headerShown: false},
-  }
+    navigationOptions: { headerShown: false },
+  },
+  NewTrip: {
+    screen: NewTrip,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Cadastrar Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  InfoTrip: {
+    screen: InfoTrip,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Informações da Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  EditTrip: {
+    screen: EditTrip,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Editar Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
 });
 
 const OnibusStack = createStackNavigator({
   Onibus: {
     screen: ListBus,
-    navigationOptions: {headerShown: false},
+    navigationOptions: { headerShown: false },
   },
   NewBus: {
     screen: NewBus,
     navigationOptions: {
       headerBackTitleVisible: false,
       tabBarVisible: false,
-      title: 'Cadastrar Ônibus',
+      title: "Cadastrar Ônibus",
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
+      headerTintColor: "#fff",
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
-    }
+    },
   },
-  InfoBus:{
+  InfoBus: {
     screen: InfoBus,
     navigationOptions: {
       headerBackTitleVisible: false,
-      title: 'Informações do Ônibus',
+      title: "Informações do Ônibus",
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
+      headerTintColor: "#fff",
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
-    }
+    },
   },
-  EditBus:{
+  EditBus: {
     screen: EditBus,
     navigationOptions: {
-      title: 'Editar Ônibus',
+      title: "Editar Ônibus",
       headerBackTitleVisible: false,
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
+      headerTintColor: "#fff",
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
-    }
-  }
+    },
+  },
 });
 
-
-const AdminStack2 = createStackNavigator ({
-  ViagemStack: {
-    screen: ViagemStack,
-    navigationOptions: {headerShown: false},
+const AdminStack2 = createStackNavigator(
+  {
+    ViagemStack: {
+      screen: ViagemStack,
+      navigationOptions: { headerShown: false },
+    },
+    OnibusStack: {
+      screen: OnibusStack,
+      navigationOptions: { headerShown: false },
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: { headerShown: false },
+    },
+    EditProfile: {
+      screen: EditProfile,
+      navigationOptions: {
+        title: "Editar Perfil",
+        headerStyle: { backgroundColor: "#283593" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
+      },
+    },
   },
-  OnibusStack: {
-    screen: OnibusStack,
-    navigationOptions: {headerShown: false}
-  },
-  Profile: {
-    screen: Profile,
-    navigationOptions: {headerShown: false},
-  },
-  EditProfile:{
-    screen: EditProfile,
-    navigationOptions: {
-      title: 'Editar Perfil',
-      headerStyle: {backgroundColor: '#283593'},
-      headerTintColor: '#fff',
-      headerTitleStyle: {fontWeight: 'bold'},
-    }
-  }
-  },{initialRouteName: 'ViagemStack'},
+  { initialRouteName: "ViagemStack" }
 );
 
-
 /* colab Navigation*/
-const colabStack2 = createStackNavigator ({
-  ViagemStack: {
-    screen: ViagemStack,
-    navigationOptions: {headerShown: false},
+const colabStack2 = createStackNavigator(
+  {
+    ViagemStack: {
+      screen: ViagemStack,
+      navigationOptions: { headerShown: false },
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: { headerShown: false },
+    },
+    EditProfile: {
+      screen: EditProfile,
+      navigationOptions: {
+        title: "Editar Perfil",
+        headerStyle: { backgroundColor: "#283593" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
+      },
+    },
   },
-  Profile: {
-    screen: Profile,
-    navigationOptions: {headerShown: false},
-  },
-  EditProfile:{
-    screen: EditProfile,
-    navigationOptions: {
-      title: 'Editar Perfil',
-      headerStyle: { backgroundColor: '#283593'},
-      headerTintColor: '#fff',
-      headerTitleStyle: { fontWeight: 'bold'},
-    }
-  }
-  }, {initialRouteName: 'ViagemStack'}
+  { initialRouteName: "ViagemStack" }
 );
 
 /* entry Navigation */
@@ -223,43 +274,43 @@ const colabStack2 = createStackNavigator ({
 const entradaStack = createStackNavigator({
   SignIn: {
     screen: SignIn,
-    navigationOptions: {headerShown: false},
+    navigationOptions: { headerShown: false },
   },
   SignUp: {
     screen: SignUp,
     navigationOptions: {
       headerBackTitleVisible: false,
-      title: 'Cadastrar',
+      title: "Cadastrar",
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
+      headerTintColor: "#fff",
       headerTitleStyle: {
-        fontWeight: 'bold',
+        fontWeight: "bold",
       },
     },
   },
-  LostPassword:{
+  LostPassword: {
     screen: LostPassword,
     navigationOptions: {
-      title: 'Esqueci minha senha',
+      title: "Esqueci minha senha",
       headerBackTitleVisible: false,
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
-    }
+      headerTintColor: "#fff",
+    },
   },
-  ChangePassword:{
+  ChangePassword: {
     screen: ChangePassword,
     navigationOptions: {
-      title: 'Trocar minha senha',
+      title: "Trocar minha senha",
       headerBackTitleVisible: false,
       headerStyle: {
-        backgroundColor: '#283593',
+        backgroundColor: "#283593",
       },
-      headerTintColor: '#fff',
-    }
+      headerTintColor: "#fff",
+    },
   },
 });
 
@@ -271,11 +322,11 @@ const MainApp = createSwitchNavigator(
     auth: entradaStack,
   },
   {
-    initialRouteName: 'auth',
-  },
+    initialRouteName: "auth",
+  }
 );
 const AppNavigator = createAppContainer(MainApp);
 
-export default function App ({navigation, router}) {
+export default function App({ navigation, router }) {
   return <AppNavigator />;
 }

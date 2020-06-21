@@ -1,17 +1,122 @@
-/* eslint-disable prettier/prettier */
-import React from "react";
-import { StyleSheet, ScrollView, Alert, View, StatusBar} from "react-native";
-import { Button, Text, Picker } from "native-base";
-import * as Font from "expo-font";
-import { TextInputMask } from "react-native-masked-text";
+import React, { useState, useEffect } from "react";
+import { ScrollView, Alert, StyleSheet } from "react-native";
+import { CheckBox } from "native-base";
+import { Picker } from "native-base";
 
-import { Container, Form, FormInput } from "./styles";
+import { parseISO, format } from "date-fns";
 
-export default function NewTrip ({ navigation }) {
+import {
+  BoxView,
+  BoxText,
+  NewContainer,
+  Form,
+  FormInput,
+  SignLink,
+  SubmitButton,
+  TitleCheck,
+  TextCheck,
+  FormMaskInput,
+  PickerContainer,
+  PickerIcon,
+  Placa,
+} from "./styles";
+
+export default function NewBus({ navigation }) {
+  const [Data, setData] = useState("");
+  const [Horario, setHorario] = useState("");
+  const [Origem, setOrigem] = useState("");
+  const [Destino, setDestino] = useState("");
+
+  const [checkBox, setCheckBox] = useState(false);
+  const [checkBox2, setCheckBox2] = useState(false);
+
+  const [dataSource, setdataSource] = useState([]);
+
+  function NewTrip() {
+    if (Data == "" || Horario == "" || Origem == "" || Destino == "") {
+      Alert.alert("Campos em branco", "Verifique os dados e tente novamente!");
+    } else {
+      fetch("http://mybus.projetoscomputacao.com.br/inserirViagem_api.php", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: Data,
+          horario: Horario,
+          origem: Origem,
+          destino: Destino,
+        }),
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          if (responseJson == "Viagem cadastrada!") {
+            Alert.alert(responseJson);
+            navigation.goBack();
+          } else {
+            Alert.alert(responseJson);
+          }
+          // Showing response message coming from server after inserting records.
+        })
+        .catch((error) => {
+          Alert.alert("Erro na conexão", "Verifique sua internet!");
+        });
+    }
+  }
+
   return (
-    <View style={{flex: 1}}><Text>Teste</Text></View>
+    <ScrollView animated="false" style={{ marginHorizontal: 0 }}>
+      <NewContainer>
+        <Form>
+          <FormMaskInput
+            icon3="calendar"
+            type={"datetime"}
+            value={Data}
+            options={{
+              format: "YYYY/MM/DD",
+            }}
+            placeholder="Data"
+            placeholderTextColor="rgba(0,0,255,0.4)"
+            onChangeText={(data) => setData(data)}
+          />
+
+          <FormMaskInput
+            icon="access-time"
+            type={"datetime"}
+            value={Horario}
+            options={{
+              format: "HH:mm",
+            }}
+            placeholder="Horario"
+            placeholderTextColor="rgba(0,0,255,0.4)"
+            onChangeText={(data) => setHorario(data)}
+          />
+
+          <FormInput
+            icon3="map-marker"
+            autoCapitalize="none"
+            autoCorrect={true}
+            placeholder="Origem"
+            onChangeText={(data) => setOrigem(data)}
+          />
+          <FormInput
+            icon3="map-marker-radius"
+            autoCorrect={true}
+            autoCapitalize="sentences"
+            placeholder="Destino"
+            onChangeText={(data) => setDestino(data)}
+          />
+        </Form>
+
+        <SignLink>
+          <SubmitButton onPress={NewTrip}>Cadastrar</SubmitButton>
+        </SignLink>
+      </NewContainer>
+    </ScrollView>
   );
 }
+
 /*
 export class NewTrip extends React.Component {
   constructor(props) {
@@ -59,6 +164,7 @@ export class NewTrip extends React.Component {
   };
 
   componentDidMount() {
+
     return fetch("http://mybus.projetoscomputacao.com.br/listBus_api.php")
       .then((response) => response.json())
       .then((responseJson) => {
