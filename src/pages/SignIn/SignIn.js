@@ -22,9 +22,12 @@ export default function SignIn ({navigation}){
 
   function fazerLogin () {
     setLoading(true);
-    if (email == '' && senha == '') { setLoading(false);} 
-    else if (email == '') { setLoading(false); Alert.alert('E-mail em branco!');}
-    else if (senha == '') { setLoading(false); Alert.alert('Senha em branco!');}
+    if (email == '' && senha == '') { 
+      Alert.alert('Dados em branco!','Preencha os campos solicitados e tente novamente.');
+      setLoading(false);
+    } 
+    else if (email == '') { setLoading(false); Alert.alert('E-mail em branco!','Verifique o campo de e-mail.');}
+    else if (senha == '') { setLoading(false); Alert.alert('Senha em branco!','Verifique o campo de senha.');}
     else {
       fetch ('http://mybus.projetoscomputacao.com.br/loginUsuario2_api.php', {
         method: 'POST',
@@ -41,18 +44,46 @@ export default function SignIn ({navigation}){
           if (responseJson == 'Bem-vindo!'){
             navigation.navigate('Reserva', {email: email});
           }
-          else if (email == null && senha == null){
-            setLoading(false);
-            Alert.alert('Dados em branco!');
-          }
           else if (responseJson == 'Administrador'){
-            navigation.navigate('Viagem', {email: email, admin: 1});
+            navigation.navigate('Viagem', {email: email});
           }
           else if (responseJson == 'Colaborador'){
-            Alert.alert('Colaborador!');
+            navigation.navigate('ViagemColab',{email: email});
           }
-          else { setLoading(false); Alert.alert(responseJson)}
+          else if (responseJson == 'Senha incorreta, verifique novamente!'){
+            Alert.alert('Senha incorreta!', 'Verifique sua senha e tente novamente.');
+            setSenha('');
+            setLoading(false);
+          }
+          else if (responseJson == 'Dados incorretos, verifique novamente!') {
+            Alert.alert('Dados incorretos!', 'Verifique seus dados e tente novamente.');
+            setEmail('');
+            setSenha('');
+            setLoading(false);
+          } else if (responseJson == 'Conta desativada!'){
+            Alert.alert(
+              "Conta desativada!",
+              "Deseja reativar sua conta?",
+              [
+                { text: "Sim, quero!", onPress: () => navigation.navigate('Reactivate', {send_email: email})},
+                {
+                  text: "Cancelar",
+                  style: "cancel"
+                }
+              ],
+              { cancelable: false }
+            );
+            setEmail('');
+            setSenha('');
+            setLoading(false);
+          } else {
+            Alert.alert(responseJson);
+            setEmail('');
+            setSenha('');
+            setLoading(false);
+          }
         }).catch((error) => {
+          //console.log(error);
           Alert.alert('Erro na conexão', 'Verifique sua internet!');
           setLoading(false);
       })
@@ -87,7 +118,8 @@ export default function SignIn ({navigation}){
         />
         <Form>
           <FormInput
-            icon= "mail-outline"  
+            icon= "mail-outline"
+            value={email}  
             placeholder="E-mail"  
             keyboardType="email-address"
             autoCompleteType="email"

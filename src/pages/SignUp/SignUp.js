@@ -115,15 +115,15 @@ export default function SignUp ({navigation}){
 
   function newUser (){
     if (nome === '' || cidade === '' || bairro === '' || CEP === '' || rua === '' || numero === ''){
-      Alert.alert('Campos em branco, verifique novamente!');
+      Alert.alert('Campos em branco!', 'Verifique seus dados e tente novamente!');
     } else if (matricula === ''){
-      Alert.alert('Matrícula em branco, verifique novamente!');
+      Alert.alert('Matrícula em branco!', 'Verifique o campo de matrícula!');
     } else if (email === ''){
-      Alert.alert('E-mail em branco, verifique novamente!');
+      Alert.alert('E-mail em branco!', 'Verifique o campo de e-mail!');
     } else if (senha === ''){
-      Alert.alert('Senha em branco, verifique novamente!');
+      Alert.alert('Senha em branco!', 'Verifique o campo de senha!');
     } else if (confirmasenha != senha) {
-      Alert.alert('Senhas diferentes, verifique novamente!');
+      Alert.alert('Senhas diferentes!', 'Verifique os campos de senha!');
     } else if (checkbox === false){
       setHeightAlert(45);
       setTextAlerta('É necessário concordar com a Política de Privacidade.');

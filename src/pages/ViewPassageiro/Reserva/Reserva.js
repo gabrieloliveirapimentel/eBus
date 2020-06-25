@@ -43,6 +43,7 @@ export default function Reserva ({navigation}) {
     });
     return () => mounted = false;
   },[]);
+
   function makeReservation (){
     fetch("http://192.168.100.6/reserva_api.php", {
       method: "POST",
@@ -129,7 +130,7 @@ export default function Reserva ({navigation}) {
   } else {
     return(
     <View style={{flex:1}}>
-    <Header title="Reserva" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
+    <Header title="Reserva" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
     <StatusBar backgroundColor="#283593" barStyle="light-content"/>
     <Container>
       <Form>

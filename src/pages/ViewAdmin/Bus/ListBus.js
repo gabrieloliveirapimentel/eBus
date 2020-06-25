@@ -22,7 +22,7 @@ export default function ListBus ({ navigation }) {
   useEffect( 
     thisList = () => {
       setloading(false);
-      fetch('http://192.168.0.17/listBus_api.php', {
+      fetch('http://mybus.projetoscomputacao.com.br/listBus_api.php', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
