@@ -49,7 +49,7 @@ export default function EditBus ({ navigation }) {
     if (editlinha === '' || editnumVagas === '' || editmotorista === ''){
       Alert.alert('Dados em branco!', 'Verifique os campos e tente novamente.');
     } else {
-      fetch('http://192.168.0.17/updateBus_api.php', {
+      fetch('http://mybus.projetoscomputacao.com.br/updateBus_api.php', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

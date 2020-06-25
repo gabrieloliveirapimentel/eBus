@@ -4,7 +4,7 @@ import { ButtonView, InfoContainer, Form, FormText, SubButton } from "./styles";
 
 //import { parseISO, format } from "date-fns";
 
-export default function InfoTrip({ navigation }) {
+export default function InfoColab({ navigation }) {
   const { Text_Data } = navigation.state.params;
   const { Text_Horario } = navigation.state.params;
   const { Text_Origem } = navigation.state.params;
@@ -55,7 +55,7 @@ export default function InfoTrip({ navigation }) {
           <FormText icon3="map-marker-radius" text={Text_Destino} />
         </Form>
         <ButtonView>
-          <SubButton onPress={() => navigation.navigate("EditTrip", {
+          <SubButton onPress={() => navigation.navigate("EditColab", {
                 Text_Id_Viagem: Text_Id_Viagem,
                 Text_Data: Text_Data,
                 Text_Horario: Text_Horario,

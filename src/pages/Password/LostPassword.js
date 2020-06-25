@@ -43,7 +43,7 @@ export default function LostPassword ({navigation}){
     <Container>
     <StatusBar backgroundColor="#283593" barStyle="light-content"/>
       <Form>
-        <Text style={{margin: 5, paddingTop: 5}}>Informe seu e-mail: </Text>
+        <Text style={{margin: 5, paddingTop: 5, fontSize: 16}}>Informe seu e-mail: </Text>
         <FormInput 
           icon="mail-outline"
           placeholder="E-mail"  

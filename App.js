@@ -10,6 +10,7 @@ import SignIn from './src/pages/SignIn/SignIn';
 import SignUp from './src/pages/SignUp/SignUp';
 import LostPassword from './src/pages/Password/LostPassword';
 import ChangePassword from './src/pages/Password/ChangePassword';
+import Reactivate from './src/pages/Password/Reactivate';
 
 /* allStack */
 import Profile from './src/pages/Profile/Profile';
@@ -28,6 +29,14 @@ import ListBus from './src/pages/ViewAdmin/Bus/ListBus';
 import NewBus from './src/pages/ViewAdmin/Bus/NewBus';
 import EditBus from './src/pages/ViewAdmin/Bus/EditBus';
 import InfoBus from './src/pages/ViewAdmin/Bus/InfoBus';
+
+/* colabStack */
+import Instituicao from './src/pages/ViewColab/Instituicao/Instituicao';
+import EditInstituicao from './src/pages/ViewColab/Instituicao/EditInst';
+import ListColab from './src/pages/ViewColab/TripColab/ListColab';
+import NewColab from './src/pages/ViewColab/TripColab/NewColab';
+import EditColab from './src/pages/ViewColab/TripColab/EditColab';
+import InfoColab from './src/pages/ViewColab/TripColab/InfoColab';
 
 console.disableYellowBox = true;
 
@@ -116,7 +125,52 @@ const ViagemStack = createStackNavigator({
   Viagem: {
     screen: ListTrip,
     navigationOptions: {headerShown: false},
-  }
+  },
+  NewTrip: {
+    screen: NewTrip,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Cadastrar Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  InfoTrip: {
+    screen: InfoTrip,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Informações da Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  EditTrip: {
+    screen: EditTrip,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Editar Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
 });
 
 const OnibusStack = createStackNavigator({
@@ -197,10 +251,75 @@ const AdminStack2 = createStackNavigator ({
 
 
 /* colab Navigation*/
-const colabStack2 = createStackNavigator ({
-  ViagemStack: {
-    screen: ViagemStack,
+const ViagemColabStack = createStackNavigator({
+  ViagemColab: {
+    screen: ListColab,
     navigationOptions: {headerShown: false},
+  },
+  NewColab: {
+    screen: NewColab,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Cadastrar Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  InfoColab: {
+    screen: InfoColab,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Informações da Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  EditColab: {
+    screen: EditColab,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Editar Viagem",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+});
+
+const colabStack2 = createStackNavigator ({
+  ViagemColaborador: {
+    screen: ViagemColabStack,
+    navigationOptions: {headerShown: false},
+  },
+  Instituicao: {
+    screen: Instituicao,
+    navigationOptions: {headerShown: false},
+  },
+  EditInstituicao: {
+    screen: EditInstituicao,
+    navigationOptions: {
+      title: 'Editar Instituição',
+      headerStyle: { backgroundColor: '#283593'},
+      headerTintColor: '#fff',
+      headerTitleStyle: { fontWeight: 'bold'},
+    }
   },
   Profile: {
     screen: Profile,
@@ -215,7 +334,7 @@ const colabStack2 = createStackNavigator ({
       headerTitleStyle: { fontWeight: 'bold'},
     }
   }
-  }, {initialRouteName: 'ViagemStack'}
+  }, {initialRouteName: 'ViagemColaborador'}
 );
 
 /* entry Navigation */
@@ -254,6 +373,17 @@ const entradaStack = createStackNavigator({
     screen: ChangePassword,
     navigationOptions: {
       title: 'Trocar minha senha',
+      headerBackTitleVisible: false,
+      headerStyle: {
+        backgroundColor: '#283593',
+      },
+      headerTintColor: '#fff',
+    }
+  },
+  Reactivate:{
+    screen: Reactivate,
+    navigationOptions: {
+      title: 'Reativar conta',
       headerBackTitleVisible: false,
       headerStyle: {
         backgroundColor: '#283593',

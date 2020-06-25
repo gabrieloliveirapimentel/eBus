@@ -11,7 +11,7 @@ import {
   FormMaskInput,
 } from "./styles";
 
-export default function NewTrip({ navigation }) {
+export default function NewColab({ navigation }) {
   const {idUsuario} = navigation.state.params;
   const [Data, setData] = useState("");
   const [Horario, setHorario] = useState("");

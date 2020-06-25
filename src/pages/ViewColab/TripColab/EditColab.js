@@ -11,7 +11,7 @@ import {
   FormMaskInput,
 } from "./styles";
 
-export default function EditTrip({ navigation }) {
+export default function EditColab({ navigation }) {
   const { Text_Id_Viagem } = navigation.state.params;
   const [Text_Data, setText_Data] = useState(navigation.state.params.Text_Data);
   const [Text_Horario, setText_Horario] = useState(navigation.state.params.Text_Horario);
@@ -41,7 +41,7 @@ export default function EditTrip({ navigation }) {
         .then((responseJson) => {
           if (responseJson == "Viagem atualizada!") {
             Alert.alert(responseJson);
-            navigation.navigate('Viagem');
+            navigation.navigate('ViagemColab');
           } else {
             Alert.alert(responseJson);
           }

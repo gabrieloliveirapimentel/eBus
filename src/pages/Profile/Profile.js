@@ -33,7 +33,7 @@ export default function Profile ({navigation}){
 
   const confirmDel = () => {
     Alert.alert(
-      "Deseja excluir sua conta?",
+      "Deseja desativar sua conta?",
       "Confirme sua solicitação.",
       [
         { text: "Sim, quero!", onPress: () => deleteUser()},
@@ -47,7 +47,7 @@ export default function Profile ({navigation}){
   }
 
   function deleteUser (){
-    fetch('http://mybus.projetoscomputacao.com.br/deleteUser_api.php', {
+    fetch('http://mybus.projetoscomputacao.com.br/disableUser_api.php', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -55,12 +55,11 @@ export default function Profile ({navigation}){
       },
       body: JSON.stringify({
         id_usuario: idUsuario,
-        id_endereco: idEnd,
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
-        if (responseJson=='Usuário deletado com sucesso!'){
-          Alert.alert('Usuário deletado!');
+        if (responseJson=='Conta desativada com sucesso!'){
+          Alert.alert('Conta desativada!', 'A conta foi desativada com sucesso!');
           navigation.navigate('SignIn')}
         else{Alert.alert(responseJson);}          
       })
@@ -205,7 +204,7 @@ export default function Profile ({navigation}){
         <Icon name= "delete" color='#f00' size={22}/>
           <SignLinkText
             onPress={confirmDel}
-          >Excluir minha conta!
+          >Desativar minha conta!
           </SignLinkText>
         </DeleteForm>    
       </Container>

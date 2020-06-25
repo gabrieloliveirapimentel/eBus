@@ -4,7 +4,7 @@ import Button from "../../../components/Button";
 import ButtonInfo from "../../../components/ButtonInfo";
 import CustomHeader from "../../../components/CustomHeader";
 import Input from "../../../components/InputSignUp";
-import TabBar from "../../../components/TabBar";
+import TabColab from "../../../components/TabColab";
 import Text from "../../../components/FormText";
 import MaskInput from "../../../components/InputMask";
 
@@ -39,7 +39,7 @@ export const FormInput = styled(Input)`
 export const FormText = styled(Text)``;
 
 export const Header = styled(CustomHeader)``;
-export const Tab = styled(TabBar)``;
+export const Tab = styled(TabColab)``;
 
 export const SubmitButton = styled(Button)`
   margin-top: 5px;
