@@ -21,15 +21,18 @@ export default function EditBus ({ navigation }) {
   const [editnumVagas, setNumVagas] = useState(navigation.state.params.numVagas);
   const [editmotorista, setMotorista] = useState(navigation.state.params.motorista);
   const [editdisponivel, setDisponivel] = useState(navigation.state.params.disponivel);
-  
+  const [editstatus, setStatus] = useState(navigation.state.params.status);
+  const [statusIcon, setStatusIcon] = useState('bus');
   const [checkBox, setCheckBox] = useState(false);
   const [checkBox2, setCheckBox2] = useState(false);
 
   useEffect(() => {
     if(editdisponivel==true){
       setCheckBox(true);
+      setStatusIcon('bus');
     } else {
       setCheckBox2(true);
+      setStatusIcon('bus-alert');
     }
   },[]);
 
@@ -49,7 +52,8 @@ export default function EditBus ({ navigation }) {
     if (editlinha === '' || editnumVagas === '' || editmotorista === ''){
       Alert.alert('Dados em branco!', 'Verifique os campos e tente novamente.');
     } else {
-      fetch('http://mybus.projetoscomputacao.com.br/updateBus_api.php', {
+      fetch('http://192.168.100.6/updateBus_api.php', {
+        //http://mybus.projetoscomputacao.com.br/updateBus_api.php
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -58,7 +62,8 @@ export default function EditBus ({ navigation }) {
           placa: editplaca,
           linha: editlinha,
           num_vagas: editnumVagas,
-          disponibilidade: editdisponivel,   
+          disponibilidade: editdisponivel,
+          status: editstatus,   
           nome: editmotorista,
         }),
       }).then((response) => response.json())
@@ -80,9 +85,9 @@ export default function EditBus ({ navigation }) {
         <FormText icon3="card-text-outline" text={editplaca}/>         
         <FormInput
           value={editlinha}
-          icon3="bus" 
+          icon3="map-marker-distance" 
           autoCapitalize="none"
-          keyboardType="number-pad"
+          autoCapitalize="sentences"
           placeholder="Linha"
           onChangeText={(data) => setLinha(data)}
         />  
@@ -102,6 +107,14 @@ export default function EditBus ({ navigation }) {
           placeholder="Motorista"
           onChangeText={(data) => setMotorista(data)}
         />
+        <FormInput
+          value={editstatus}
+          icon3={statusIcon}
+          autoCorrect={true}
+          autoCapitalize="sentences"
+          placeholder="Status do Ônibus"
+          onChangeText={(data) => setStatus(data)}
+        />
       <BoxView>
       <TitleCheck>Disponibilidade: </TitleCheck>
       <BoxText>
@@ -110,16 +123,17 @@ export default function EditBus ({ navigation }) {
           checked={checkBox}
           onPress={toggleSwitch}
         />
-        <TextCheck>Disponivel</TextCheck>
+        <TextCheck>Disponível</TextCheck>
         <CheckBox
           style={{marginLeft: 20}}
           color="rgba(0,0,255,0.6)"
           checked={checkBox2}
           onPress={toggleSwitch2}
         />
-        <TextCheck>Indisponivel</TextCheck>
+        <TextCheck>Indisponível</TextCheck>
       </BoxText>
       </BoxView>
+      
       </Form>
       <SignLink>
         <SubmitButton

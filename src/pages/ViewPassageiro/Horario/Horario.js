@@ -1,14 +1,15 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState, useCallback} from 'react';
-import {Picker} from 'native-base';
+import {Picker, Button, Text, Left, Right} from 'native-base';
+import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 import {
   View,
   StyleSheet,
   FlatList,
-  Text,
   Alert,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView
 } from 'react-native';
 
 import {
@@ -18,8 +19,11 @@ import {
   PickerContainer,
   PickerIcon,
   Origem,
-  Destino
+  Destino,
+  IconView
 } from './styles';
+
+import {addDays, format} from 'date-fns';
 
 export default function Horario ({navigation}){
   const [OrigemValue, setOrigemValue] = useState('');
@@ -29,9 +33,26 @@ export default function Horario ({navigation}){
 
   const [listItem, setlistItem] = useState();
   const [refreshing, setRefreshing] = useState(false);
+  const [day, setDay] = useState(0);
+
+
+  function decrease () {
+    setDay(day - 1);
+  }
+
+  function increase (){
+    setDay(day + 1);
+  }
+
+  const today = new Date();
+  const data = format(today, 'dd/MM/yyyy');
+  const today2 = addDays(today, day);
+  const todayCorrect = format(today2, 'dd/MM/yyyy');
+  const todayData = format(today2, 'dd-MM-yyyy');
 
   useEffect(() => {
-    fetch('http://mybus.projetoscomputacao.com.br/listTripHorario_api.php')
+    fetch('http://192.168.100.6/listTripHorario_api.php')
+    //http://mybus.projetoscomputacao.com.br/listTripHorario_api.php
       .then((response) => response.json())
       .then((responseJson) => {
         setdataSource(responseJson);
@@ -42,7 +63,8 @@ export default function Horario ({navigation}){
   },[]);
 
   useEffect(() => {
-    fetch('http://mybus.projetoscomputacao.com.br/checkHorario_api.php', {
+    fetch('http://192.168.100.6/checkHorario_api.php', {
+      //http://mybus.projetoscomputacao.com.br/checkHorario_api.php
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -51,21 +73,26 @@ export default function Horario ({navigation}){
       body: JSON.stringify({
         origem: OrigemValue,
         destino: DestinoValue,
+        data: todayData
       }),
     })
     .then((response) => response.json())
     .then((responseJson) => {
-      setlistItem(responseJson);
+      setlistItem(responseJson.horario);
       setErro('');
       if (responseJson === 'Viagem não encontrada!'){
-        setErro('Viagem não encontrada!');
+        setErro('Nenhum horário disponível!');
         setlistItem('');
+      } else {
+        setlistItem(responseJson);
+        setErro('');
       }
     })
     .catch((error) => {
+      //console.log(error);
       Alert.alert('Erro na conexão!', 'Tente novamente!');
     });
-  }, [DestinoValue, OrigemValue]);
+  }, [OrigemValue, DestinoValue, todayData]);
 
   function wait(timeout) {
     return new Promise(resolve => {
@@ -73,28 +100,60 @@ export default function Horario ({navigation}){
     });
   }
 
+  const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      title: '',
+    },
+    {
+      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      title: '',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: '',
+    },
+  ];
+
+  function List() {
+    if (erro == 'Nenhum horário disponível!'){
+      return (
+        <FlatList
+          style={{marginLeft:20}}
+          data={DATA}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <Text>{item.title}</Text>)}
+        />  
+      );
+    } else {
+      return (
+        <FlatList
+          style={{marginLeft:20}}
+          data={listItem}
+          keyExtractor={item => item.id_viagem}
+          renderItem={({item}) => (
+          <Text style={{fontSize: 18, marginLeft:20, marginBottom: 10}}>{item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}</Text>)}
+        />
+      );
+    }
+  }
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     wait(1200).then(() => setRefreshing(false));
   }, [refreshing]);
 
-  function Item({horario, data}) {
-    return (
-      <View>
-        <Text style={{fontSize: 16}}>{horario} ({data})</Text>
-      </View>
-    );
-  }
-
   return (
+    <SafeAreaView>
     <ScrollView animated='false'contentContainerStyle={{flex:1}} refreshControl={
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
     <Container>
       <PickerContainer>
         <PickerIcon name="map-marker" size={20} color="rgba(0,0,255,0.6)"/>
-        <Origem>Origem:</Origem>
+        <Origem>De:</Origem>
         <Picker
-        style={styles.PickerInput}
+          style={styles.PickerInput}
           selectedValue={OrigemValue}
           onValueChange={(itemvalue, itemIndex) => setOrigemValue(itemvalue)}
           >
@@ -105,27 +164,30 @@ export default function Horario ({navigation}){
       
       <PickerContainer>
       <PickerIcon name="map-marker-radius" size={20} color="rgba(0,0,255,0.6)"/>
-      <Destino>Destino:</Destino>
+      <Destino>Para:</Destino>
       <Picker
         style={styles.PickerInput}
-          selectedValue={DestinoValue}
-          onValueChange={(itemvalue, itemIndex) => setDestinoValue(itemvalue)}
-          >
-          {dataSource.map((item, key) => (
-          <Picker.Item label={item.destino} value={item.destino} key={key}/>))}
+        selectedValue={DestinoValue}
+        onValueChange={(itemvalue, itemIndex) => setDestinoValue(itemvalue)}
+      >{dataSource.map((item, key) => (
+        <Picker.Item label={item.destino} value={item.destino} key={key}/>))}
         </Picker>
       </PickerContainer>
-      <TextHorario>Horários: </TextHorario>
+      <IconView>
+        <Left>
+          <Icon style={{marginLeft: 10}} color="rgba(0,0,255,0.6)" name="arrow-left-circle-outline" size={24} onPress={decrease} />
+        </Left>
+        <Text style={{color:'rgba(0,0,255,0.6)'}}>{todayCorrect}</Text>
+        <Right>
+          <Icon style={{marginRight: 10}} color="rgba(0,0,255,0.6)" name="arrow-right-circle-outline" size={24} onPress={increase} />
+        </Right>
+      </IconView>
       <Erro>{erro}</Erro>
-      <FlatList
-        style={{marginLeft:20}}
-        data={listItem}
-        keyExtractor={item => item.id_viagem}
-        renderItem={({item}) => (
-        <Item horario={item.horario} data={item.data} />)}
-      />
+      <TextHorario>Horários: </TextHorario>
+      <List />
     </Container>
     </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -138,3 +200,6 @@ const styles = StyleSheet.create({
     color: 'rgba(0,0,255,0.6)',
   }
 });
+
+
+

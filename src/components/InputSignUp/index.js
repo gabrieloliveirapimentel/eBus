@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {MaterialCommunityIcons as Icon2} from 'react-native-vector-icons';
 
@@ -17,11 +17,11 @@ function InputSignUp ({style, icon, icon3, icon2, iconPress, ...rest}, ref) {
     </Container>
   );
 }
-
-/*InputSignUp.PropTypes = {
-  icon: PropTypes.string,
-  icon2: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+/*
+InputSignUp.propTypes = {
+  icon: propTypes.string,
+  icon2: propTypes.string,
+  style: propTypes.oneOfType([propTypes.object, propTypes.array]),
 };
 
 InputSignUp.defaultProps = {
@@ -30,4 +30,5 @@ InputSignUp.defaultProps = {
   style: {},
 };
 */
+
 export default forwardRef (InputSignUp);

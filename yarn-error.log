@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add date-fns
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-native-screens
 
 PATH: 
   C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python27\;C:\Python27\Scripts;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\ProgramData\chocolatey\bin;C:\Program Files\nodejs\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\Java\jdk1.8.0_211\bin;C:\Android\Sdk\tools\bin;C:\Android\Sdk\platform-tools;C:\Android\Sdk\tools;C:\Android\Sdk\emulator;C:\Program Files\Java\jdk1.8.0_251;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Xampp\php;C:\Program Files\Git\cmd;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Users\gabri\AppData\Local\Microsoft\WindowsApps;C:\Users\gabri\AppData\Roaming\npm;C:\Users\gabri\AppData\Local\Yarn\bin;C:\Android\Sdk\emulator;C:\Android\Sdk\tools;C:\Android\Sdk\platform-tools;C:\Android\Sdk\tools\bin;C:\Program Files\Java\jdk1.8.0_251;C:\Program Files\Xampp\php;
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\gabri\projetoMyBusExpo\node_modules\@babel\compat-data\node_modules\.bin'
+  Error: EBUSY: resource busy or locked, copyfile 'C:\Users\gabri\AppData\Local\Yarn\Cache\v6\npm-react-native-web-0.11.7-d173d5a9b58db23b6d442c4bc4c81e9939adac23-integrity\node_modules\react-native-web\dist\cjs\exports\CheckBox\index.js' -> 'C:\Users\gabri\projetoMyBusExpo\node_modules\react-native-web\dist\cjs\exports\CheckBox\index.js'
 
 npm manifest: 
   {
@@ -27,12 +27,13 @@ npm manifest:
       "eject": "expo eject"
     },
     "dependencies": {
-      "@react-native-community/masked-view": "^0.1.10",
+      "@react-native-community/masked-view": "^0.1.6",
       "@react-native-community/picker": "^1.6.3",
       "@react-navigation/drawer": "^5.7.1",
       "@react-navigation/material-bottom-tabs": "^5.2.1",
       "@react-navigation/native": "^5.2.6",
       "@react-navigation/stack": "^5.3.1",
+      "date-fns": "^2.14.0",
       "expo": "~37.0.3",
       "native-base": "^2.13.12",
       "npm-git-install": "^0.3.0",
@@ -44,12 +45,12 @@ npm manifest:
       "react-native-gesture-handler": "^1.6.1",
       "react-native-masked-text": "^1.13.0",
       "react-native-paper": "^3.10.1",
-      "react-native-reanimated": "^1.8.0",
-      "react-native-safe-area-context": "^1.0.0",
-      "react-native-screens": "^2.7.0",
+      "react-native-reanimated": "^1.7.1",
+      "react-native-safe-area-context": "0.7.3",
+      "react-native-screens": "~2.2.0",
       "react-native-vector-icons": "^6.6.0",
       "react-native-web": "~0.11.7",
-      "react-navigation": "^4.3.9",
+      "react-navigation": "^4.4.0",
       "react-navigation-drawer": "^2.4.13",
       "react-navigation-material-bottom-tabs": "^2.2.12",
       "react-navigation-stack": "^2.4.0",
@@ -1227,10 +1228,10 @@ Lockfile:
       wcwidth "^1.0.1"
       ws "^1.1.0"
   
-  "@react-native-community/masked-view@^0.1.10":
-    version "0.1.10"
-    resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
-    integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
+  "@react-native-community/masked-view@0.1.6":
+    version "0.1.6"
+    resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.6.tgz#c7f2ac187c1f25aa8c30d11baa8f4398eca3bb84"
+    integrity sha512-PpMoeXwPUoldCRKDuSi+zK5rT+sJTW6ri6RdGPkSKRzU77Q1d9IaR0O5IKvBj0XSdL3p+dcOa05gk35aGDffBQ==
   
   "@react-native-community/picker@^1.6.3":
     version "1.6.3"
@@ -4801,17 +4802,17 @@ Lockfile:
       lodash "^4.17.4"
       prop-types "^15.5.10"
   
-  react-native-reanimated@^1.8.0:
-    version "1.8.0"
-    resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.8.0.tgz#0b5719b20c1fed9aaf8afd9a12e21c9bd46ee428"
-    integrity sha512-vGTt94lE5fsZmfMwERWFIsCr5LHsyllOESeNvlKryLgAg7h4cnJ5XSmVSy4L3qogdgFYCL6HEgY+s7tQmKXiiQ==
+  react-native-reanimated@~1.7.0:
+    version "1.7.1"
+    resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.7.1.tgz#6363c7f3ebbabc56a05d5dccaf09d95f3b6a2d69"
+    integrity sha512-aBwhoQdH4shkeTPbi7vKcAwYOzBp/6zElEKuIOgby11TceoM7y5SgNImC3HbDWWld3QV2PA2AgQGwAy51WgF3Q==
     dependencies:
       fbjs "^1.0.0"
   
-  react-native-safe-area-context@^1.0.0:
-    version "1.0.0"
-    resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-1.0.0.tgz#8b4d79b06d6a9ed5ff3b2c3f0ba25d85538a3149"
-    integrity sha512-8Poo0FHSS/KE0fP6JUH9Mnjg2KQ5MfZAJN3G8/gW2HoFSypWSfFmDp5msETU0Ix3OnRsmBZTJpmgHFEl9OfNAg==
+  react-native-safe-area-context@0.7.3:
+    version "0.7.3"
+    resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.7.3.tgz#ad6bd4abbabe195332c53810e4ce5851eb21aa2a"
+    integrity sha512-9Uqu1vlXPi+2cKW/CW6OnHxA76mWC4kF3wvlqzq4DY8hn37AeiXtLFs2WkxH4yXQRrnJdP6ivc65Lz+MqwRZAA==
   
   react-native-safe-area-view@^0.14.9:
     version "0.14.9"
@@ -4820,10 +4821,12 @@ Lockfile:
     dependencies:
       hoist-non-react-statics "^2.3.1"
   
-  react-native-screens@^2.7.0:
-    version "2.7.0"
-    resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.7.0.tgz#2d3cf3c39a665e9ca1c774264fccdb90e7944047"
-    integrity sha512-n/23IBOkrTKCfuUd6tFeRkn3lB2QZ3cmvoubRscR0JU/Zl4/ZyKmwnFmUv1/Fr+2GH/H8UTX59kEKDYYg3dMgA==
+  react-native-screens@~2.2.0:
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.2.0.tgz#cc4cdf17426fdda97ad93a5e812a1899390f1978"
+    integrity sha512-a0VzxOWot7F9B/GQyDSssBRd3jUJazFnTQS61IiyReWB6aHlFhf3Xz10jBRoURXy1EMCDCHgenmTVTkKHpKyqQ==
+    dependencies:
+      debounce "^1.2.0"
   
   react-native-status-bar-height@^2.2.0:
     version "2.5.0"

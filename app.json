@@ -16,8 +16,8 @@
       "backgroundColor": "#283593"
     },
     "androidStatusBar": {
-      "barStyle": "light-content", 
-      "backgroundColor": "#283593" 
+      "barStyle": "light-content",
+      "backgroundColor": "#283593"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -32,13 +32,14 @@
     },
     "android": {
       "package": "com.cefet.projetoMyBusExpo",
-      "versionCode": 1.0,
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#283593",
         "foregroundImage": "./assets/icon.png",
         "backgroundImage": "./assets/background_icon.png"
       }
     },
-    "description": ""
+    "description": "",
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }

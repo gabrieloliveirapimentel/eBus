@@ -4,6 +4,7 @@ import {Platform} from 'react-native';
 import Input from '../../components/InputSignUp';
 import MaskInput from '../../components/InputMask';
 import Button from '../../components/Button';
+import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 
 export const Container = styled.View`
   flex: 1;
@@ -59,4 +60,18 @@ export const BoxView = styled.View`
   flex-direction: row;
   height: 35px;
   margin-top: 10px;
+`;
+
+export const PickerContainer = styled.View`
+  flex-direction: row;
+  margin-bottom: 10px;
+  backgroundColor: rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  height: 50px;
+`;
+
+export const PickerIcon = styled(Icon)`
+  marginLeft: 12px;
+  justify-content: center;
+  align-self: center;
 `;

@@ -46,7 +46,8 @@ export default function ChangePassword ({navigation}){
       Alert.alert('Senhas diferentes!')
     }
     else {
-      fetch('http://mybus.projetoscomputacao.com.br/updateSenha_api.php', {
+      fetch('http://192.168.100.6/updateSenha_api.php', {
+        //http://mybus.projetoscomputacao.com.br/updateSenha_api.php
       method: 'POST',
       headers: {
         'Accept': 'application/json',

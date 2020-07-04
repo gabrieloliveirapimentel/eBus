@@ -6,6 +6,7 @@ import CustomHeader from '../../../components/CustomHeader';
 import Input from '../../../components/InputSignUp';
 import TabBar from '../../../components/TabBar';
 import Text from '../../../components/FormText';
+import MaskInput from "../../../components/InputMask";
 
 export const Container = styled.View`
   flex: 1;
@@ -83,5 +84,10 @@ export const BoxView = styled.View`
   background: rgba(0, 0, 0, 0.1);
   padding: 5px;
   border-radius: 10px;
+  margin-bottom: 10px;
+`;
+
+export const FormMaskInput = styled(MaskInput)`
+  color: "rgba(0,0,255,0.8)";
   margin-bottom: 10px;
 `;

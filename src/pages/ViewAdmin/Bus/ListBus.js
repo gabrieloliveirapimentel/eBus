@@ -5,6 +5,8 @@ import {
   Alert,
   FlatList,
   Text,
+  StyleSheet,
+  View
 } from "react-native";
 import { Fab } from "native-base";
 import { Icon } from "react-native-elements";
@@ -17,12 +19,15 @@ export default function ListBus ({ navigation }) {
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  const [erro, setErro] = useState('');
+
   function thisList(){}
 
   useEffect( 
     thisList = () => {
       setloading(false);
-      fetch('http://mybus.projetoscomputacao.com.br/listBus_api.php', {
+      fetch('http://192.168.100.6/listBus_api.php', {
+        //http://mybus.projetoscomputacao.com.br/listBus_api.php
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -32,7 +37,16 @@ export default function ListBus ({ navigation }) {
           fk_id_usuario: idUsuario,
         }),
       }).then((response) => response.json())
-        .then((responseJson) => {setdataSource(responseJson);}
+        .then((responseJson) => {
+          
+          if (responseJson == 'Nenhum ônibus cadastrado.'){
+            setErro('Erro.');
+            Alert.alert('Nenhum ônibus cadastrado!','Faça o cadastrado de ônibus.');
+          } else {
+            setErro('Sem erro.');
+            setdataSource(responseJson);
+          }
+        }
       ).catch((error) => {
         Alert.alert('Erro na conexão', 'Verifique sua internet!');
         setloading(false);
@@ -45,6 +59,73 @@ export default function ListBus ({ navigation }) {
     thisList();   
   }, [refreshing]);
 
+  function listSeparator(){
+    return (
+      <View 
+        style={{
+          backgroundColor:'rgba(0,0,0,0.1)',
+          height:1,
+          width: 330,
+          alignSelf:'center'
+        }}
+      />
+    );
+  }
+
+  const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      title: '',
+    },
+    {
+      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      title: '',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: '',
+    },
+  ];
+
+  function List() {
+    if (erro == 'Sem erro'){
+      return (
+        <FlatList
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          data={dataSource}
+          ItemSeparatorComponent={listSeparator}
+          renderItem={({item}) => (
+            <Text onPress={() => navigation.navigate('InfoBus', {
+              placa: item.placa,
+              linha: item.linha, 
+              numVagas: item.num_vagas, 
+              motorista: item.nome, 
+              disponivel: item.disponibilidade,
+              status: item.status
+              })} 
+              style={styles.text}>
+            {item.placa}
+            </Text>
+          )}
+          keyExtractor={(item) => item.placa}
+        />
+      );
+    } else {
+      return (
+        <FlatList
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        style={{marginLeft:20}}
+        data={DATA}
+        keyExtractor={item => item.id}
+        renderItem={({item}) => (
+          <Text>{item.title}</Text>)}
+        /> 
+      );
+    }
+  }
+
   if (loading) {
     return (
       <Container>
@@ -54,28 +135,15 @@ export default function ListBus ({ navigation }) {
   } else {
     return (
       <Container>
-        <Header title="Ônibus" icon="refresh" iconPress={onRefresh}/>
-        <FlatList
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          data={dataSource}
-          renderItem={({item}) => (
-            <Text 
-              onPress={() => navigation.navigate('InfoBus', {
-                placa: item.placa,
-                linha: item.linha, 
-                numVagas: item.num_vagas, 
-                motorista: item.nome, 
-                disponivel: item.disponibilidade
-              })} 
-              style={{fontSize: 18, color: "#000",padding: 10}}>
-              {item.placa}
-            </Text> )}
-          keyExtractor={(item) => item.placa}
-          />
+        <Header 
+          title="Ônibus"
+          icon="person"
+          iconPress={() => navigation.navigate("Profile", { idUsuario: idUsuario })}
+        />
+        <List />
         <Fab
           onPress={() => navigation.navigate('NewBus',{idUsuario: idUsuario})}
-          style={{ backgroundColor: "#283593", marginBottom: 50 }}
+          style={styles.fab}
           position="bottomRight">
           <Icon name="add" color="#fff" />
         </Fab>
@@ -90,119 +158,15 @@ export default function ListBus ({ navigation }) {
   }
 }
 
-/*
-export class ListBus extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = { 
-      fetching_Status: false,
-      loading: true,
-      refreshing: false,
-    }
-  }
-
-  refreshList = () => {
-    this.setState({
-      refreshing: true,
-      fetching_Status: true,
-    },() =>{this.componentDidMount();}
-    )
-  }
-
-  componentDidMount() {
-    this.setState({
-      loading: false,
-      refreshing: false,
-    });
-    return fetch('http://mybus.projetoscomputacao.com.br/listBus_api.php')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          dataSource: responseJson,
-          fetching_Status: true,
-        }, function() {
-          // In this block you can do something with new state.
-        });
-      })
-      .catch((error) => {
-        Alert.alert('Erro na conexão', 'Verifique sua internet!');
-        this.setState({loading:false, refreshing: false});
-      });
-  }
-
-  FlatListItemSeparator =()=> {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: "100%",
-          backgroundColor: "#f0f0f0",
-        }}
-      />
-    );
-  }
-
-  render() {
-    if (this.state.loading) {
-      return (
-        <View style={{flex: 1, justifyContent: 'center'}}><ActivityIndicator size="large" color="#283593" /></View>
-      );
-    } else {
-      return (
-      <View style={{flex: 1}}>
-        <Header title="Menu" isHome={true} style={styles.containerheader}>
-        <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-          <Body style={{paddingLeft: 20}}><Text style={styles.textHeader}>Ônibus</Text></Body>
-          <Right>
-            <Button transparent onPress = { this.refreshList} >
-              <Icon name="refresh" color="#fff"/>
-            </Button>
-          </Right>
-        </Header>
-          <FlatList
-            refreshing={this.state.refreshing}
-            onRefresh={this.refreshList}
-            data={ this.state.dataSource }
-            ItemSeparatorComponent = {this.FlatListItemSeparator}
-            renderItem={({item}) => <Text style={styles.FlatListitems}
-              
-            onPress={() => {this.props.navigation.navigate('InfoBus',{placa: item.placa,
-               linha: item.linha, 
-               num_vagas: item.num_vagas, 
-               motorista: item.nome, 
-               disponivel: item.disponibilidade})}}>{item.placa} </Text>}
-            keyExtractor={(item, index) => index}
-            />
-          <Fab 
-              onPress={() => {this.props.navigation.navigate('CadastrarOnibus')}}
-              style={{ backgroundColor: "#283593" }}
-              position="bottomRight">
-                <Icon name="add" color="#fff"/>
-            </Fab>
-      </View>
-      );
-    }
-  }
-}
-
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 1,
+  text:{
+    fontSize: 18, 
+    color: "#000",
+    padding: 10, 
+    marginLeft: 15
   },
-  containerheader: {
-    backgroundColor:"#283593",
-    paddingTop: 10,
-    height: 70,
-  },
-  FlatListitems: {
-    fontSize: 18,
-    color: '#000',
-    padding: 10
-  },
-  textHeader: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight:'bold',
+  fab: {
+    backgroundColor: "#283593", 
+    marginBottom: 50 
   }
 });
-*/

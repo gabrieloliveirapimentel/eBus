@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { RefreshControl, ScrollView, Alert } from "react-native";
-import { ButtonView, InfoContainer, Form, FormText, SubButton } from "./styles";
+import { InfoContainer, Form, FormText, SignLink, SubmitButton } from "./styles";
 
-//import { parseISO, format } from "date-fns";
+import {format, parseISO} from 'date-fns';
 
 export default function InfoColab({ navigation }) {
   const { Text_Data } = navigation.state.params;
@@ -10,34 +10,14 @@ export default function InfoColab({ navigation }) {
   const { Text_Origem } = navigation.state.params;
   const { Text_Destino } = navigation.state.params;
   const { Text_Id_Viagem } = navigation.state.params;
+  const { Text_Vagas} = navigation.state.params;
+  const { Text_Placa } = navigation.state.params; 
+  
+  const date = parseISO(Text_Data);
+  const dateCorrect = format(date, 'dd/MM/yyyy');
+  const hour = (Text_Horario[0]+Text_Horario[1]+Text_Horario[2]+Text_Horario[3]+Text_Horario[4]);
 
   const [refreshing, setRefreshing] = useState(false);
-
-  //const parsedDate = parseISO(Text_Data);
-  //const formattedDate = format(parsedDate, "dd/MM/yyyy");
-
-  function DropTrip() {
-    fetch("http://mybus.projetoscomputacao.com.br/deleteTrip_api.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id_viagem: Text_Id_Viagem,
-      }),
-    }).then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson == "Viagem deletada!") {
-          Alert.alert(responseJson);
-          navigation.goBack();
-        } else {
-          Alert.alert(responseJson);
-        }
-      }).catch((error) => {
-          Alert.alert("Erro na conexão", "Verifique sua internet!");
-    });
-  }
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -48,24 +28,26 @@ export default function InfoColab({ navigation }) {
     <ScrollView animated="false" contentContainerStyle={{ flex: 1 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <InfoContainer>
-        <Form>
-          <FormText icon3="calendar" text={Text_Data}/>
-          <FormText icon="access-time" text={Text_Horario}/>
-          <FormText icon3="map-marker" text={Text_Origem}/>
-          <FormText icon3="map-marker-radius" text={Text_Destino} />
+      <Form>
+          <FormText icon3="calendar" text="Data: " text2={dateCorrect}/>
+          <FormText icon="access-time" text="Horário: " text2={hour}/>
+          <FormText icon3="map-marker" text="De: " text2={Text_Origem}/>
+          <FormText icon3="map-marker-radius" text="Para: " text2={Text_Destino} />
+          <FormText icon3="bus" text="Ônibus: " text2={Text_Placa} />
+          <FormText icon3="numeric" text="Lugares disponíveis: " text2={Text_Vagas} />
         </Form>
-        <ButtonView>
-          <SubButton onPress={() => navigation.navigate("EditColab", {
+        <SignLink>
+          <SubmitButton onPress={() => navigation.navigate("EditColab", {
                 Text_Id_Viagem: Text_Id_Viagem,
                 Text_Data: Text_Data,
                 Text_Horario: Text_Horario,
                 Text_Origem: Text_Origem,
                 Text_Destino: Text_Destino,
+                Text_Placa: Text_Placa,
               })
           }>Editar
-          </SubButton>
-          <SubButton onPress={DropTrip}>Deletar</SubButton>
-        </ButtonView>
+          </SubmitButton>
+        </SignLink>
       </InfoContainer>
     </ScrollView>
   );
