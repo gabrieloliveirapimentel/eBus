@@ -25,7 +25,8 @@ export default function Reserva ({navigation}) {
 
   useEffect(() => {
     let mounted = true;
-    fetch('http://mybus.projetoscomputacao.com.br/verificaID_api.php', {
+    fetch('http://192.168.100.6/verificaID_api.php', {
+      //http://mybus.projetoscomputacao.com.br/verificaID_api.php
       method: 'POST',
         headers: {
           Accept: 'application/json',

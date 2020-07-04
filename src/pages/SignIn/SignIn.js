@@ -29,7 +29,7 @@ export default function SignIn ({navigation}){
     else if (email == '') { setLoading(false); Alert.alert('E-mail em branco!','Verifique o campo de e-mail.');}
     else if (senha == '') { setLoading(false); Alert.alert('Senha em branco!','Verifique o campo de senha.');}
     else {
-      fetch ('http://mybus.projetoscomputacao.com.br/loginUsuario2_api.php', {
+      fetch ('http://192.168.100.6/loginUsuario2_api.php', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -114,7 +114,7 @@ export default function SignIn ({navigation}){
       <StatusBar backgroundColor="#283593" barStyle="light-content"/>
         <Image 
           style={styles.tinyLogo}
-          source={require('../../components/assets/logomybus.png')}
+          source={require('../../components/assets/logoebus.png')}
         />
         <Form>
           <FormInput
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#283593'
   },
   tinyLogo: {
-    width: 175,
-    height: 120,
+    width: 210,
+    height: 155,
   },
 });
 

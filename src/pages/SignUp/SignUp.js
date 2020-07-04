@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, StyleSheet, ScrollView, Alert, View, Text, StatusBar, Linking} from 'react-native';
-import {CheckBox} from 'native-base';
-import * as Font from 'expo-font';
+import {CheckBox, Picker} from 'native-base';
 
 import {
   BoxView,
@@ -10,6 +9,8 @@ import {
   Form,
   FormInput,
   FormMaskInput,
+  PickerContainer,
+  PickerIcon,
   SignLink,
   SignLinkText,
   SubmitButton,
@@ -29,7 +30,8 @@ export default function SignUp ({navigation}){
   const [senha, setSenha] = useState('');
   const [confirmasenha, setConfirmaSenha] = useState('');
   const [matricula, setMatricula] = useState('');
-  const [instituicao, setInstituicao] = useState('');
+  const [dataSource, setdataSource] = useState([]);
+  const [idInst, setIDInst] = useState(0);
   const [telefone, setTelefone] = useState('');
   const [numero, setNumero] = useState(0);
   const [complemento, setComplento] = useState('');
@@ -50,12 +52,17 @@ export default function SignUp ({navigation}){
   const [heightAlert, setHeightAlert] = useState(0);
 
   useEffect(() => {
-    Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+    fetch("http://192.168.100.6/pickerInst_api.php")
+    //http://ebus.projetoscomputacao.com.br/pickerInst_api.php
+    .then((response) => response.json())
+    .then((responseJson) => {
+      setdataSource(responseJson);
+    })
+    .catch((error) => {
+      Alert.alert('Erro na conexão!', 'Tente novamente!');
     });
     setLoading(false);
-  });
+  },[]);
 
   function toggleCheck(){
     if (checkbox === false){
@@ -128,7 +135,8 @@ export default function SignUp ({navigation}){
       setHeightAlert(45);
       setTextAlerta('É necessário concordar com a Política de Privacidade.');
     } else {
-      fetch('http://mybus.projetoscomputacao.com.br/inserirUsuario_api.php', {
+      fetch('http://192.168.100.6/insertUsuario_api.php', {
+        //http://ebus.projetoscomputacao.com.br/insertUsuario_api.php
         method: 'POST',
         headers: {
         Accept: 'application/json',
@@ -138,6 +146,7 @@ export default function SignUp ({navigation}){
           senha: senha,
           matricula: matricula,
           nome: nome,
+          fk_instituicao: idInst,
           telefone: telefone,
           numero: numero,
           complemento: complemento,
@@ -161,15 +170,15 @@ export default function SignUp ({navigation}){
         })
     }
   }
-  
-  if(loading){
-    return(
+
+  if (loading === true){
+    return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ActivityIndicator size="large" color="#283593" />
       </View>
     );
   } else {
-    return(
+    return (
       <ScrollView animated='false'style={styles.scrollView}>
       <StatusBar backgroundColor="#283593" barStyle="light-content"/>
       <Container> 
@@ -211,6 +220,17 @@ export default function SignUp ({navigation}){
             placeholderTextColor='rgba(0,0,255,0.4)'
             onChangeText={(data) => setConfirmaSenha(data)}
           />
+          <PickerContainer>
+            <PickerIcon name="school" size={20} color="rgba(0,0,255,0.6)"/>
+            <Picker
+              style={{color:"rgba(0,0,255,0.6)", marginLeft: 5}}
+              selectedValue={idInst}
+              onValueChange={(itemvalue) => setIDInst(itemvalue)}
+            >
+              {dataSource.map((item, key) => (
+              <Picker.Item label={item.nome_instituicao} value={item.id_instituicao} key={key}/>))}
+            </Picker>
+          </PickerContainer>
           <FormInput
             icon="computer"
             autoCorrect={false}
@@ -219,13 +239,6 @@ export default function SignUp ({navigation}){
             placeholder="Matricula"
             placeholderTextColor='rgba(0,0,255,0.4)'
             onChangeText={(data) => setMatricula(data)}
-          />
-          <FormInput
-            icon="school"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Instituição"
-            placeholderTextColor='rgba(0,0,255,0.4)'
           />
           <FormMaskInput
             icon="call"
@@ -260,12 +273,13 @@ export default function SignUp ({navigation}){
             onChangeText={(data) => setRua(data)}
           />
           <FormInput
-            icon3="numeric-1-box-multiple-outline"
+            icon3="numeric-1-box-multiple-outline" 
             autoCorrect={false}
-            autoCapitalize="none"
+            value={numero}
+            type={"custom"}
             keyboardType="number-pad"
             placeholder="Número"
-            placeholderTextColor='rgba(0,0,255,0.4)'
+            placeholderTextColor="rgba(0,0,255,0.4)"
             onChangeText={(data) => setNumero(data)}
           />
           <FormInput
@@ -296,7 +310,7 @@ export default function SignUp ({navigation}){
           />         
           <FormInput
             icon="public"
-            autoCorrect={false}
+            autoCapitalize="characters"
             placeholder="UF"
             value={UF}
             placeholderTextColor='rgba(0,0,255,0.4)'
@@ -313,7 +327,7 @@ export default function SignUp ({navigation}){
           />
           <TextCheck>Concordo com a </TextCheck>
             <TextCheckLink
-              onPress={() => {Linking.openURL('http://mybus.projetoscomputacao.com.br/#politica')}}>
+              onPress={() => {Linking.openURL('http://ebus.projetoscomputacao.com.br/#politica')}}>
               Política de Privacidade
             </TextCheckLink>
         </BoxView>
@@ -330,9 +344,11 @@ export default function SignUp ({navigation}){
             onPress={() => navigation.goBack()}>
             Já sou cadastrado
           </SignLinkText>
-        </SignLink>    
-      </Container> 
+        </SignLink>
+      </Container>
       </ScrollView>
     );
   }
+
+  
 }

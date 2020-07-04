@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect, useCallback} from 'react';
-import {ScrollView, View, RefreshControl, Alert} from 'react-native';
+import {ActivityIndicator, ScrollView, View, RefreshControl, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
   Container,
@@ -30,6 +30,7 @@ export default function Profile ({navigation}){
   const [cidade, setCidade] = useState('');
   const [UF, setUF] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const confirmDel = () => {
     Alert.alert(
@@ -47,7 +48,8 @@ export default function Profile ({navigation}){
   }
 
   function deleteUser (){
-    fetch('http://mybus.projetoscomputacao.com.br/disableUser_api.php', {
+    fetch('http://192.168.100.6/disableUser_api.php', {
+      //http://mybus.projetoscomputacao.com.br/disableUser_api.php
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -84,17 +86,19 @@ export default function Profile ({navigation}){
     });
   }, [refreshing]);
 
-  useEffect(thisPerfil = () => {
-    let mounted = true;
-    fetch('http://mybus.projetoscomputacao.com.br/meuPerfil_api.php',{
-      method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id_usuario: idUsuario,
-        }),
+  useEffect(
+    thisPerfil = () => {
+      let mounted = true;
+      fetch('http://192.168.100.6/meuPerfil_api.php',{
+        //http://mybus.projetoscomputacao.com.br/meuPerfil_api.php
+        method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id_usuario: idUsuario,
+          }),
       }).then((response) => response.json())
         .then((resultado) => {
         if (mounted)
@@ -113,9 +117,14 @@ export default function Profile ({navigation}){
             setBairro(resultado.bairro),
             setCidade(resultado.cidade),
             setUF(resultado.uf)
+            setLoading(false);
           }
-        }).catch((error) => { Alert.alert('Erro na conexão', 'Verifique sua internet!');})
+        }).catch((error) => { 
+          setLoading(false);
+          Alert.alert('Erro na conexão', 'Verifique sua internet!');
+        })
     return () => mounted = false;
+    
   },[]);
 
   function sendtoEditProfile(){
@@ -137,79 +146,86 @@ export default function Profile ({navigation}){
       send_UF: UF
     })
   }
-
-  if(admin == 1 || colab == 1){
-    return (
-      <View style={{flex:1}}>
-      <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
-      <ScrollView animated='false' refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <Container>
-        <Form>
-          <FormText icon3="laptop" text={nome}/>
-          <FormText icon="mail-outline" text={email}/>
-          <FormText icon="call" text={telefone}/>
-          <FormText icon="map" text={CEP}/>
-          <FormText icon="home" text={rua}/>
-          <FormText icon3="numeric-1-box-multiple-outline" text={num}/>
-          <FormText icon3="home-city" text={complemento}/>
-          <FormText icon3="city-variant" text={bairro}/>
-          <FormText icon3="city-variant-outline" text={cidade}/>
-          <FormText icon="public" text={UF}/>
-        </Form>
-        <SignLink>
-          <SubmitButton
-            onPress={sendtoEditProfile}
-          >Editar dados
-          </SubmitButton>
-        </SignLink>
-        <DeleteForm>
-        <Icon name= "delete" color='#f00' size={22}/>
-          <SignLinkText
-            onPress={confirmDel}>
-            Excluir minha conta!
-          </SignLinkText>
-        </DeleteForm>    
-      </Container>
-      </ScrollView>
+  if (loading == true){
+    return(
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <ActivityIndicator size="large" color="#283593" />
       </View>
     );
-  } else {
-    return (
-      <View style={{flex:1}}>
-      <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
-      <ScrollView animated='false' refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <Container>
-        <Form>
-          <FormText icon="person" text={nome}/>
-          <FormText icon="computer" text={matricula}/>
-          <FormText icon="mail-outline" text={email}/>
-          <FormText icon="call" text={telefone}/>
-          <FormText icon="map" text={CEP}/>
-          <FormText icon="home" text={rua}/>
-          <FormText icon3="numeric-1-box-multiple-outline" text={num}/>
-          <FormText icon3="home-city" text={complemento}/>
-          <FormText icon3="city-variant" text={bairro}/>
-          <FormText icon3="city-variant-outline" text={cidade}/>
-          <FormText icon="public" text={UF}/>
-        </Form>
-        <SignLink>
-          <SubmitButton
-            onPress={sendtoEditProfile}
-          >Editar dados
-          </SubmitButton>
-        </SignLink>
-        <DeleteForm>
-        <Icon name= "delete" color='#f00' size={22}/>
-          <SignLinkText
-            onPress={confirmDel}
-          >Desativar minha conta!
-          </SignLinkText>
-        </DeleteForm>    
-      </Container>
-      </ScrollView>
-      </View>
-    );
+  } else { 
+    if(admin == 1 || colab == 1){
+      return (
+        <View style={{flex:1}}>
+        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
+        <ScrollView animated='false' refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <Container>
+          <Form>
+            <FormText icon3="laptop" text={nome}/>
+            <FormText icon="mail-outline" text={email}/>
+            <FormText icon="call" text={telefone}/>
+            <FormText icon="map" text={CEP}/>
+            <FormText icon="home" text={rua}/>
+            <FormText icon3="numeric-1-box-multiple-outline" text={num}/>
+            <FormText icon3="home-city" text={complemento}/>
+            <FormText icon3="city-variant" text={bairro}/>
+            <FormText icon3="city-variant-outline" text={cidade}/>
+            <FormText icon="public" text={UF}/>
+          </Form>
+          <SignLink>
+            <SubmitButton
+              onPress={sendtoEditProfile}
+            >Editar dados
+            </SubmitButton>
+          </SignLink>
+          <DeleteForm>
+          <Icon name= "delete" color='#f00' size={22}/>
+            <SignLinkText
+              onPress={confirmDel}
+            >Desativar minha conta!
+            </SignLinkText>
+          </DeleteForm>    
+        </Container>
+        </ScrollView>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{flex:1}}>
+        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
+        <ScrollView animated='false' refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <Container>
+          <Form>
+            <FormText icon="person" text={nome}/>
+            <FormText icon="computer" text={matricula}/>
+            <FormText icon="mail-outline" text={email}/>
+            <FormText icon="call" text={telefone}/>
+            <FormText icon="map" text={CEP}/>
+            <FormText icon="home" text={rua}/>
+            <FormText icon3="numeric-1-box-multiple-outline" text={num}/>
+            <FormText icon3="home-city" text={complemento}/>
+            <FormText icon3="city-variant" text={bairro}/>
+            <FormText icon3="city-variant-outline" text={cidade}/>
+            <FormText icon="public" text={UF}/>
+          </Form>
+          <SignLink>
+            <SubmitButton
+              onPress={sendtoEditProfile}
+            >Editar dados
+            </SubmitButton>
+          </SignLink>
+          <DeleteForm>
+          <Icon name= "delete" color='#f00' size={22}/>
+            <SignLinkText
+              onPress={confirmDel}
+            >Desativar minha conta!
+            </SignLinkText>
+          </DeleteForm>    
+        </Container>
+        </ScrollView>
+        </View>
+      );
+    }
   }
 }

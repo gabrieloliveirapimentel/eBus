@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, ScrollView, Alert, StatusBar, Linking} from 'react-native';
+import {ActivityIndicator, View, StyleSheet, ScrollView, Alert, StatusBar, Linking} from 'react-native';
 
 import {
   Container,
@@ -33,6 +33,7 @@ export default function EditProfile ({navigation}){
   const {send_bairro} = navigation.state.params; 
   const {send_cidade} = navigation.state.params;
   const {send_UF} = navigation.state.params;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setNome(send_nome);
@@ -40,12 +41,13 @@ export default function EditProfile ({navigation}){
     setMatricula(send_matricula);
     setTelefone(send_telefone);
     setNumero(send_num);
-    setComplento(send_complemento);
+    setComplemento(send_complemento);
     setCEP(send_CEP);
     setRua(send_rua);
     setBairro(send_bairro);
     setCidade(send_cidade);
     setUF(send_UF);
+    setLoading(false);
   },[]);
 
   const [nome, setNome] = useState('');
@@ -55,7 +57,7 @@ export default function EditProfile ({navigation}){
   const [matricula, setMatricula] = useState('');
   const [telefone, setTelefone] = useState('');
   const [numero, setNumero] = useState(0);
-  const [complemento, setComplento] = useState('');
+  const [complemento, setComplemento] = useState('');
   const [CEP, setCEP] = useState('');
   const [rua, setRua] = useState('');
   const [bairro, setBairro] = useState('');
@@ -128,6 +130,7 @@ export default function EditProfile ({navigation}){
         }      
       }).catch((error) => {
         Alert.alert('Tente novamente!');
+        setLoading(false);
       });
     }
   }
@@ -182,11 +185,153 @@ export default function EditProfile ({navigation}){
         })
     }
   }
-  if (send_admin == 1 || send_colab == 1){
-    return(
-      <ScrollView animated='false'style={styles.scrollView}>
-      <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-      <Container> 
+
+  if (loading == true){
+    return (
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <ActivityIndicator size="large" color="#283593" />
+      </View>
+    );
+  } else {
+    if (send_admin == 1 || send_colab == 1){
+      return(
+        <ScrollView animated='false'style={styles.scrollView}>
+        <StatusBar backgroundColor="#283593" barStyle="light-content"/>
+        <Container> 
+          <Form>
+            <FormInput
+              icon="person"
+              autoCorrect={true}
+              value={nome}
+              autoCapitalize="sentences"
+              placeholder="Nome"
+              placeholderTextColor='rgba(0,0,255,0.2)'
+              onChangeText={(data) => setNome(data)}
+            />
+            <FormInput
+              icon="mail-outline"
+              autoCapitalize="none"
+              value={email}
+              keyboardType="email-address"
+              autoCompleteType="email"
+              placeholder="E-mail"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setEmail(data)}
+            />
+            <FormInput
+              icon="lock-outline"
+              icon2={icon}
+              iconPress={attVisibility}
+              autoCapitalize="none"
+              secureTextEntry = {verificar}
+              placeholder="Senha"  
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setSenha(data)}
+            />
+            <FormInput
+              icon="lock-outline"
+              icon2= {icon2}
+              iconPress={attVisibility2}
+              autoCapitalize="none"
+              secureTextEntry = {verificar2}
+              placeholder="Confirmar Senha"  
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setConfirmaSenha(data)}
+            />
+            <FormMaskInput
+              icon="call"
+              type={"cel-phone"}
+              value={telefone}
+              options={{
+                maskType: "BRL",
+                withDDD: true,
+                dddMask: "(99) ",
+              }}
+              placeholder="Telefone"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setTelefone(data)}
+            />
+            <FormMaskInput
+              icon="map"
+              icon4="map-search"
+              iconPress={attCEP}
+              type={"zip-code"}
+              value={CEP}
+              placeholder="CEP"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setCEP(data)}
+            />
+            <FormInput
+              icon="home"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Rua"
+              value={rua}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setRua(data)}
+            />
+            <FormMaskInput
+              icon3="numeric-1-box-multiple-outline" 
+              autoCorrect={false}
+              value={numero}
+              type={"custom"}
+              keyboardType="number-pad"
+              options={{mask: '99999'}}
+              placeholder="Número"
+              placeholderTextColor="rgba(0,0,255,0.4)"
+              onChangeText={(data) => setNumero(data)}
+            /> 
+            <FormInput
+              icon3="home-city"
+              autoCorrect={false}
+              value={complemento}
+              autoCapitalize="none"
+              placeholder="Complemento"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setComplemento(data)}
+            />
+            <FormInput
+              icon3="city-variant"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Bairro"
+              value = {bairro}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setBairro(data)}
+            />
+            <FormInput
+              icon3="city-variant-outline"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Cidade"
+              value = {cidade}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setCidade(data)}
+            />         
+            <FormInput
+              icon="public"
+              autoCapitalize="characters"
+              placeholder="UF"
+              value={UF}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setUF(data)}
+              autoCapitalize="characters"
+              maxLength={2}
+            />
+          </Form>
+          <SignLink>
+            <SubmitButton
+              onPress={confirmEdit}>Confirmar
+            </SubmitButton>
+          </SignLink>    
+        </Container> 
+        </ScrollView>
+      );
+    } else {
+      return(
+        <ScrollView animated='false'style={styles.scrollView}>
+        <StatusBar backgroundColor="#283593" barStyle="light-content"/>
+        <Container> 
         <Form>
           <FormInput
             icon="person"
@@ -198,114 +343,124 @@ export default function EditProfile ({navigation}){
             onChangeText={(data) => setNome(data)}
           />
           <FormInput
-            icon="mail-outline"
-            autoCapitalize="none"
-            value={email}
-            keyboardType="email-address"
-            autoCompleteType="email"
-            placeholder="E-mail"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setEmail(data)}
-          />
-          <FormInput
-            icon="lock-outline"
-            icon2={icon}
-            iconPress={attVisibility}
-            autoCapitalize="none"
-            secureTextEntry = {verificar}
-            placeholder="Senha"  
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setSenha(data)}
-          />
-          <FormInput
-            icon="lock-outline"
-            icon2= {icon2}
-            iconPress={attVisibility2}
-            autoCapitalize="none"
-            secureTextEntry = {verificar2}
-            placeholder="Confirmar Senha"  
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setConfirmaSenha(data)}
-          />
-          <FormMaskInput
-            icon="call"
-            type={"cel-phone"}
-            value={telefone}
-            options={{
-              maskType: "BRL",
-              withDDD: true,
-              dddMask: "(99) ",
-            }}
-            placeholder="Telefone"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setTelefone(data)}
-          />
-          <FormMaskInput
-            icon="map"
-            icon4="map-search"
-            iconPress={attCEP}
-            type={"zip-code"}
-            value={CEP}
-            placeholder="CEP"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setCEP(data)}
-          />
-          <FormInput
-            icon="home"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Rua"
-            value={rua}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setRua(data)}
-          />
-          <FormInput
-            icon3="numeric-1-box-multiple-outline"
-            autoCorrect={false}
-            value={numero}
-            autoCapitalize="none"
-            keyboardType="number-pad"
-            placeholder="Número"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setNumero(data)}
-          />
-          <FormInput
-            icon3="home-city"
-            autoCorrect={false}
-            value={complemento}
-            autoCapitalize="none"
-            placeholder="Complemento"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setComplento(data)}
-          />
-          <FormInput
-            icon3="city-variant"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Bairro"
-            value = {bairro}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setBairro(data)}
-          />
-          <FormInput
-            icon3="city-variant-outline"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Cidade"
-            value = {cidade}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setCidade(data)}
-          />         
-          <FormInput
-            icon="public"
-            autoCorrect={false}
-            placeholder="UF"
-            value={UF}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setUF(data)}
-            autoCapitalize="characters"
-            maxLength={2}
-          />
+              icon="mail-outline"
+              autoCapitalize="none"
+              value={email}
+              keyboardType="email-address"
+              autoCompleteType="email"
+              placeholder="E-mail"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setEmail(data)}
+            />
+            <FormInput
+              icon="lock-outline"
+              icon2={icon}
+              iconPress={attVisibility}
+              autoCapitalize="none"
+              secureTextEntry = {verificar}
+              placeholder="Senha"  
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setSenha(data)}
+            />
+            <FormInput
+              icon="lock-outline"
+              icon2= {icon2}
+              iconPress={attVisibility2}
+              autoCapitalize="none"
+              secureTextEntry = {verificar2}
+              placeholder="Confirmar Senha"  
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setConfirmaSenha(data)}
+            />
+            <FormInput
+              icon="computer"
+              autoCorrect={false}
+              value={matricula}
+              autoCapitalize="none"
+              keyboardType="number-pad"
+              placeholder="Matricula"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setMatricula(data)}
+            />
+            <FormMaskInput
+              icon="call"
+              type={"cel-phone"}
+              value={telefone}
+              options={{
+                maskType: "BRL",
+                withDDD: true,
+                dddMask: "(99) ",
+              }}
+              placeholder="Telefone"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setTelefone(data)}
+            />
+            <FormMaskInput
+              icon="map"
+              icon4="map-search"
+              iconPress={attCEP}
+              type={"zip-code"}
+              value={CEP}
+              placeholder="CEP"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setCEP(data)}
+            />
+            <FormInput
+              icon="home"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Rua"
+              value={rua}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setRua(data)}
+            />
+            <FormInput
+              icon3="numeric-1-box-multiple-outline"
+              autoCorrect={false}
+              value={numero}
+              autoCapitalize="none"
+              keyboardType="number-pad"
+              placeholder="Número"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setNumero(data)}
+            />
+            <FormInput
+              icon3="home-city"
+              autoCorrect={false}
+              value={complemento}
+              autoCapitalize="none"
+              placeholder="Complemento"
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setComplento(data)}
+            />
+            <FormInput
+              icon3="city-variant"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Bairro"
+              value = {bairro}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setBairro(data)}
+            />
+            <FormInput
+              icon3="city-variant-outline"
+              autoCorrect={false}
+              autoCapitalize="none"
+              placeholder="Cidade"
+              value = {cidade}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setCidade(data)}
+            />         
+            <FormInput
+              icon="public"
+              autoCorrect={false}
+              placeholder="UF"
+              value={UF}
+              placeholderTextColor='rgba(0,0,255,0.4)'
+              onChangeText={(data) => setUF(data)}
+              autoCapitalize="characters"
+              maxLength={2}
+            />
         </Form>
         <SignLink>
           <SubmitButton
@@ -315,148 +470,6 @@ export default function EditProfile ({navigation}){
       </Container> 
       </ScrollView>
     );
-  } else {
-    return(
-      <ScrollView animated='false'style={styles.scrollView}>
-      <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-      <Container> 
-      <Form>
-        <FormInput
-          icon="person"
-          autoCorrect={true}
-          value={nome}
-          autoCapitalize="sentences"
-          placeholder="Nome"
-          placeholderTextColor='rgba(0,0,255,0.2)'
-          onChangeText={(data) => setNome(data)}
-        />
-        <FormInput
-            icon="mail-outline"
-            autoCapitalize="none"
-            value={email}
-            keyboardType="email-address"
-            autoCompleteType="email"
-            placeholder="E-mail"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setEmail(data)}
-          />
-          <FormInput
-            icon="lock-outline"
-            icon2={icon}
-            iconPress={attVisibility}
-            autoCapitalize="none"
-            secureTextEntry = {verificar}
-            placeholder="Senha"  
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setSenha(data)}
-          />
-          <FormInput
-            icon="lock-outline"
-            icon2= {icon2}
-            iconPress={attVisibility2}
-            autoCapitalize="none"
-            secureTextEntry = {verificar2}
-            placeholder="Confirmar Senha"  
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setConfirmaSenha(data)}
-          />
-          <FormInput
-            icon="computer"
-            autoCorrect={false}
-            value={matricula}
-            autoCapitalize="none"
-            keyboardType="number-pad"
-            placeholder="Matricula"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setMatricula(data)}
-          />
-          <FormMaskInput
-            icon="call"
-            type={"cel-phone"}
-            value={telefone}
-            options={{
-              maskType: "BRL",
-              withDDD: true,
-              dddMask: "(99) ",
-            }}
-            placeholder="Telefone"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setTelefone(data)}
-          />
-          <FormMaskInput
-            icon="map"
-            icon4="map-search"
-            iconPress={attCEP}
-            type={"zip-code"}
-            value={CEP}
-            placeholder="CEP"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setCEP(data)}
-          />
-          <FormInput
-            icon="home"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Rua"
-            value={rua}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setRua(data)}
-          />
-          <FormInput
-            icon3="numeric-1-box-multiple-outline"
-            autoCorrect={false}
-            value={numero}
-            autoCapitalize="none"
-            keyboardType="number-pad"
-            placeholder="Número"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setNumero(data)}
-          />
-          <FormInput
-            icon3="home-city"
-            autoCorrect={false}
-            value={complemento}
-            autoCapitalize="none"
-            placeholder="Complemento"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setComplento(data)}
-          />
-          <FormInput
-            icon3="city-variant"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Bairro"
-            value = {bairro}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setBairro(data)}
-          />
-          <FormInput
-            icon3="city-variant-outline"
-            autoCorrect={false}
-            autoCapitalize="none"
-            placeholder="Cidade"
-            value = {cidade}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setCidade(data)}
-          />         
-          <FormInput
-            icon="public"
-            autoCorrect={false}
-            placeholder="UF"
-            value={UF}
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setUF(data)}
-            autoCapitalize="characters"
-            maxLength={2}
-          />
-      </Form>
-      <SignLink>
-        <SubmitButton
-          onPress={confirmEdit}>Confirmar
-        </SubmitButton>
-      </SignLink>    
-    </Container> 
-    </ScrollView>
-  );
+    }
   }
 }

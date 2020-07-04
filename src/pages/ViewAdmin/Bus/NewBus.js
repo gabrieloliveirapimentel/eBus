@@ -8,6 +8,7 @@ import {
   NewContainer,
   Form,
   FormInput,
+  FormMaskInput,
   SignLink,
   SubmitButton,
   TitleCheck,
@@ -20,6 +21,7 @@ export default function NewBus ({ navigation }) {
   const [linha, setLinha] = useState('');
   const [numVagas, setNumVagas] = useState(0);
   const [disp, setDisp] = useState(false);
+  const [status, setStatus] = useState('');
   const [nome, setNome] = useState('');
   const [checkBox, setCheckBox] = useState(false);
   const [checkBox2, setCheckBox2] = useState(false);
@@ -39,6 +41,7 @@ export default function NewBus ({ navigation }) {
           placa: placa,
           linha: linha,
           num_vagas: numVagas,
+          status: status,
           disponibilidade: disp,
           nome: nome,
         }),
@@ -70,33 +73,45 @@ export default function NewBus ({ navigation }) {
     <ScrollView animated='false'style={{marginHorizontal: 0}}>
     <NewContainer>
       <Form>
-        <FormInput
+        <FormMaskInput
           icon3="card-text-outline" 
-          autoCorrect={true}
-          autoCapitalize="sentences"
+          autoCapitalize="characters"
+          type={"custom"}
+          options={{mask: 'AAA-9999'}}
+          value={placa}
           placeholder="Placa"
+          placeholderTextColor="rgba(0,0,255,0.4)"
           onChangeText={(data) => setPlaca(data)}
-        />          
+        />       
         <FormInput
-          icon3="bus" 
+          icon3="map-marker-distance" 
           autoCapitalize="none"
-          keyboardType="number-pad"
+          autoCapitalize="sentences"
           placeholder="Linha"
           onChangeText={(data) => setLinha(data)}
-        />  
+        />
         <FormInput
           icon3="numeric" 
           autoCapitalize="none"
           keyboardType="number-pad"
           placeholder="Número de Vagas"
+          maxLength = {2}
+          placeholderTextColor="rgba(0,0,255,0.4)"
           onChangeText={(data) => setNumVagas(data)}
-        />
+        />  
         <FormInput
           icon3="account" 
           autoCorrect={true}
           autoCapitalize="sentences"
           placeholder="Motorista"
           onChangeText={(data) => setNome(data)}
+        />
+        <FormInput
+          icon3="bus" 
+          autoCapitalize="none"
+          keyboardType="number-pad"
+          placeholder="Status do Ônibus"
+          onChangeText={(data) => setStatus(data)}
         />
       <BoxView>
       <TitleCheck>Disponibilidade: </TitleCheck>
@@ -106,14 +121,14 @@ export default function NewBus ({ navigation }) {
           checked={checkBox}
           onPress={toggleSwitch}
         />
-        <TextCheck>Disponivel</TextCheck>
+        <TextCheck>Disponível</TextCheck>
         <CheckBox
           style={{marginLeft: 20}}
           color="rgba(0,0,255,0.6)"
           checked={checkBox2}
           onPress={toggleSwitch2}
         />
-        <TextCheck>Indisponivel</TextCheck>
+        <TextCheck>Indisponível</TextCheck>
       </BoxText>
       </BoxView>
       </Form>

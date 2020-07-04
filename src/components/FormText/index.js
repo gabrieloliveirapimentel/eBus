@@ -7,12 +7,12 @@ Icon.loadFont();
 
 import {Container, Form} from './styles';
 
-function FormText({style, icon, icon3, text,...rest}) {
+function FormText({style, icon, icon3, text, text2,...rest}) {
   return (
     <Container style={style}>
       {icon3 && <Icon2 name={icon3} size={20} color="rgba(0,0,255,0.8)"/>}
       {icon && <Icon name={icon} size={20} color="rgba(0,0,255,0.8)"/>}
-      <Form {... rest} style={style}>{text}</Form>
+  <Form {... rest} style={style}>{text}{text2}</Form>
     </Container>
   );
 }
