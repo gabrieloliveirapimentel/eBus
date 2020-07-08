@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState, useCallback} from 'react';
-import {Picker, Button, Text, Left, Right} from 'native-base';
+import {Picker, Text, Left, Right} from 'native-base';
 import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 import {
-  View,
   StyleSheet,
   FlatList,
   Alert,
@@ -51,8 +50,7 @@ export default function Horario ({navigation}){
   const todayData = format(today2, 'dd-MM-yyyy');
 
   useEffect(() => {
-    fetch('http://192.168.100.6/listTripHorario_api.php')
-    //http://mybus.projetoscomputacao.com.br/listTripHorario_api.php
+    fetch('http://ebus.projetoscomputacao.com.br/backend/scheduleTrip_api.php')
       .then((response) => response.json())
       .then((responseJson) => {
         setdataSource(responseJson);
@@ -63,8 +61,7 @@ export default function Horario ({navigation}){
   },[]);
 
   useEffect(() => {
-    fetch('http://192.168.100.6/checkHorario_api.php', {
-      //http://mybus.projetoscomputacao.com.br/checkHorario_api.php
+    fetch('http://ebus.projetoscomputacao.com.br/backend/scheduleCheck_api.php', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

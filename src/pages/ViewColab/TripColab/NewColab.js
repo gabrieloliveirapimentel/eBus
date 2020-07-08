@@ -7,6 +7,7 @@ import {
   NewContainer,
   Form,
   FormInput,
+  FormText,
   SignLink,
   SubmitButton,
   FormMaskInput,
@@ -31,8 +32,7 @@ export default function NewColab({ navigation }) {
 
   useEffect(
     (thisList = () => {
-      fetch("http://192.168.100.6/listBus_api.php", {
-        //http://mybus.projetoscomputacao.com.br/listBus_api.php
+      fetch("http://ebus.projetoscomputacao.com.br/backend/listBusTrip_api.php", {
         method: "POST",
         headers: {
           Accept: "application/json",

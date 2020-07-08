@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MyBus",
-    "slug": "projetoMyBusExpo",
+    "name": "eBus",
+    "slug": "projetoeBusExpo",
     "platforms": [
       "ios",
       "android",
@@ -27,11 +27,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.cefet.projetoMyBusExpo",
+      "bundleIdentifier": "com.cefet.projetoeBusExpo",
       "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.cefet.projetoMyBusExpo",
+      "package": "com.cefet.projetoeBusExpo",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#283593",

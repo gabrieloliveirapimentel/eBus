@@ -42,7 +42,7 @@ export default function EditInst ({navigation}){
       bairro == '' || cidade == '' || UF == ''){
       Alert.alert('Campos em branco!', 'Verifique os dados preenchidos.');
     } else {
-      fetch('http://mybus.projetoscomputacao.com.br/updateInst_api.php', {
+      fetch('http://ebus.projetoscomputacao.com.br/backend/updateInst_api.php', {
         method: 'POST',
         headers: {
         Accept: 'application/json',

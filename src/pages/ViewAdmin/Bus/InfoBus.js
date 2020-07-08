@@ -1,20 +1,20 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {RefreshControl, ScrollView, Alert} from 'react-native';
 import {
+  ButtonView,
   InfoContainer,
   Form,
   FormText,
-  SubmitButton,
-  SignLink,
+  SubButton
   } from './styles';
 
 export default function InfoBus ({ navigation }) {
   const {placa} = navigation.state.params;
   const {linha} = navigation.state.params;
-  const {numVagas} = navigation.state.params;
+  const {lugares} = navigation.state.params;
   const {motorista} = navigation.state.params;
   const {disponivel} = navigation.state.params;
-  const {status} = navigation.state.params;
+  const {situacao} = navigation.state.params;
   const [disp, setDisp] = useState('');
   const [icon, setIcon] = useState('circle-outline');
   const [statusIcon, setStatusIcon] = useState('bus');
@@ -33,7 +33,7 @@ export default function InfoBus ({ navigation }) {
   },[]);
 
   function dropBus (){
-    fetch('http://mybus.projetoscomputacao.com.br/disableBus_api.php', {
+    fetch('http://ebus.projetoscomputacao.com.br/backend/disableBus_api.php', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -41,7 +41,6 @@ export default function InfoBus ({ navigation }) {
       },
       body: JSON.stringify({
         placa: placa,
-        nome: motorista,
       })
     }).then((response) => response.json())
       .then((responseJson) => {
@@ -69,24 +68,28 @@ export default function InfoBus ({ navigation }) {
       <Form>
         <FormText icon3="card-text-outline" text={placa}/>
         <FormText icon3="map-marker-distance" text={linha}/>
-        <FormText icon3="numeric" text={numVagas}/>
+        <FormText icon3="numeric" text={lugares}/>
         <FormText icon3="account" text={motorista}/>
         <FormText icon3={icon} text={disp}/>
-        <FormText icon3={statusIcon} text={status}/>
+        <FormText icon3={statusIcon} text={situacao}/>
       </Form>
-      <SignLink>
-        <SubmitButton
+      <ButtonView>
+      <SubButton
           onPress={() => navigation.navigate('EditBus', {
             placa: placa,
             linha: linha, 
-            numVagas: numVagas, 
+            lugares: lugares, 
             motorista: motorista, 
             disponivel: disponivel,
-            status: status,
+            situacao: situacao,
           })}
           >Editar
-        </SubmitButton>
-      </SignLink>
+        </SubButton>
+        <SubButton
+          onPress={dropBus}
+          >Remover
+        </SubButton>
+      </ButtonView>
     </InfoContainer>
     </ScrollView> 
   );

@@ -19,18 +19,19 @@ export default function NewBus ({ navigation }) {
   const {idUsuario} = navigation.state.params;
   const [placa, setPlaca] = useState('');
   const [linha, setLinha] = useState('');
-  const [numVagas, setNumVagas] = useState(0);
+  const [lugares, setlugares] = useState(0);
   const [disp, setDisp] = useState(false);
-  const [status, setStatus] = useState('');
+  const [situacao, setsituacao] = useState('');
   const [nome, setNome] = useState('');
   const [checkBox, setCheckBox] = useState(false);
   const [checkBox2, setCheckBox2] = useState(false);
 
   function NewBus () {
-    if (placa == '' || linha == '' || numVagas == '' || nome == ''){
+    if (placa == '' || linha == '' || lugares == '' || nome == '' || situacao == ''){
       Alert.alert('Campos em branco', 'Verifique os dados e tente novamente!');
     } else {
-      fetch('http://mybus.projetoscomputacao.com.br/insertBus_api.php', {
+      fetch('http://ebus.projetoscomputacao.com.br/backend/insertBus_api.php', {
+        //
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -40,8 +41,8 @@ export default function NewBus ({ navigation }) {
           fk_id_usuario: idUsuario,
           placa: placa,
           linha: linha,
-          num_vagas: numVagas,
-          status: status,
+          lugares: lugares,
+          situacao: situacao,
           disponibilidade: disp,
           nome: nome,
         }),
@@ -94,10 +95,10 @@ export default function NewBus ({ navigation }) {
           icon3="numeric" 
           autoCapitalize="none"
           keyboardType="number-pad"
-          placeholder="Número de Vagas"
+          placeholder="Lugares"
           maxLength = {2}
           placeholderTextColor="rgba(0,0,255,0.4)"
-          onChangeText={(data) => setNumVagas(data)}
+          onChangeText={(data) => setlugares(data)}
         />  
         <FormInput
           icon3="account" 
@@ -109,9 +110,9 @@ export default function NewBus ({ navigation }) {
         <FormInput
           icon3="bus" 
           autoCapitalize="none"
-          keyboardType="number-pad"
+          autoCapitalize="sentences"
           placeholder="Status do Ônibus"
-          onChangeText={(data) => setStatus(data)}
+          onChangeText={(data) => setsituacao(data)}
         />
       <BoxView>
       <TitleCheck>Disponibilidade: </TitleCheck>

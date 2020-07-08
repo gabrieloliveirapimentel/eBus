@@ -18,10 +18,10 @@ import {
 export default function EditBus ({ navigation }) {
   const [editplaca, setPlaca] = useState(navigation.state.params.placa);
   const [editlinha, setLinha] = useState(navigation.state.params.linha);
-  const [editnumVagas, setNumVagas] = useState(navigation.state.params.numVagas);
+  const [editLugares, setLugares] = useState(navigation.state.params.lugares);
   const [editmotorista, setMotorista] = useState(navigation.state.params.motorista);
   const [editdisponivel, setDisponivel] = useState(navigation.state.params.disponivel);
-  const [editstatus, setStatus] = useState(navigation.state.params.status);
+  const [editsituacao, setsituacao] = useState(navigation.state.params.situacao);
   const [statusIcon, setStatusIcon] = useState('bus');
   const [checkBox, setCheckBox] = useState(false);
   const [checkBox2, setCheckBox2] = useState(false);
@@ -49,11 +49,10 @@ export default function EditBus ({ navigation }) {
   }
 
   function updateBus() {
-    if (editlinha === '' || editnumVagas === '' || editmotorista === ''){
+    if (editlinha === '' || editLugares === '' || editmotorista === '' || editsituacao === ''){
       Alert.alert('Dados em branco!', 'Verifique os campos e tente novamente.');
     } else {
-      fetch('http://192.168.100.6/updateBus_api.php', {
-        //http://mybus.projetoscomputacao.com.br/updateBus_api.php
+      fetch('http://ebus.projetoscomputacao.com.br/backend/updateBus_api.php', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -61,9 +60,9 @@ export default function EditBus ({ navigation }) {
       }, body: JSON.stringify({
           placa: editplaca,
           linha: editlinha,
-          num_vagas: editnumVagas,
+          lugares: editLugares,
           disponibilidade: editdisponivel,
-          status: editstatus,   
+          situacao: editsituacao,   
           nome: editmotorista,
         }),
       }).then((response) => response.json())
@@ -92,12 +91,12 @@ export default function EditBus ({ navigation }) {
           onChangeText={(data) => setLinha(data)}
         />  
         <FormInput
-          value={editnumVagas}
+          value={editLugares}
           icon3="numeric" 
           autoCapitalize="none"
           keyboardType="number-pad"
           placeholder="Número de Vagas"
-          onChangeText={(data) => setNumVagas(data)}
+          onChangeText={(data) => setLugares(data)}
         />
         <FormInput
           value={editmotorista}
@@ -108,12 +107,12 @@ export default function EditBus ({ navigation }) {
           onChangeText={(data) => setMotorista(data)}
         />
         <FormInput
-          value={editstatus}
+          value={editsituacao}
           icon3={statusIcon}
           autoCorrect={true}
           autoCapitalize="sentences"
           placeholder="Status do Ônibus"
-          onChangeText={(data) => setStatus(data)}
+          onChangeText={(data) => setsituacao(data)}
         />
       <BoxView>
       <TitleCheck>Disponibilidade: </TitleCheck>

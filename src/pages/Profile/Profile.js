@@ -48,8 +48,7 @@ export default function Profile ({navigation}){
   }
 
   function deleteUser (){
-    fetch('http://192.168.100.6/disableUser_api.php', {
-      //http://mybus.projetoscomputacao.com.br/disableUser_api.php
+    fetch('http://ebus.projetoscomputacao.com.br/backend/disableUser_api.php', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -89,8 +88,7 @@ export default function Profile ({navigation}){
   useEffect(
     thisPerfil = () => {
       let mounted = true;
-      fetch('http://192.168.100.6/meuPerfil_api.php',{
-        //http://mybus.projetoscomputacao.com.br/meuPerfil_api.php
+      fetch('http://ebus.projetoscomputacao.com.br/backend/myProfile_api.php',{
         method: 'POST',
           headers: {
             Accept: 'application/json',

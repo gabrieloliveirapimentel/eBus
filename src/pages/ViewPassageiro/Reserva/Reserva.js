@@ -1,32 +1,40 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import { View, StatusBar, Alert} from 'react-native';
+import { View, StatusBar, Alert, StyleSheet, FlatList, Text, ScrollView, SafeAreaView} from 'react-native';
+import { Picker } from 'native-base';
+import {format} from 'date-fns';
 import {
   Container,
   Form,
   FormInput,
-  FormMaskInput,
   FormText,
   FormStatus,
+  FormHour,
   Header,
   Status,
   SubmitButton,
-  SubmitView
+  SubmitView,
+  PickerContainer,
+  PickerIcon,
+  Origem,
+  Destino
 } from './styles';
 
 export default function Reserva ({navigation}) {
   const {email} = navigation.state.params;
   const [idUsuario, setIdUsuario] = useState(0);
-  const [reservado, setReservado] = useState(false);
-  const [origem, setOrigem] = useState('');
-  const [destino, setDestino] = useState('');
-  const [matricula, setMatricula] = useState('');
-  const [horario, setHorario] = useState('');
+  const [listItem, setlistItem] = useState();
+  const [OrigemValue, setOrigemValue] = useState('');
+  const [DestinoValue, setDestinoValue] = useState('');
+  const [dataSource, setdataSource] = useState([]);
+  const [erro, setErro] = useState('');
+  const today = new Date();
+  const data = format(today, 'dd/MM/yyyy');
+  const todayData = format(today, 'dd-MM-yyyy');
 
   useEffect(() => {
     let mounted = true;
-    fetch('http://192.168.100.6/verificaID_api.php', {
-      //http://mybus.projetoscomputacao.com.br/verificaID_api.php
+    fetch('http://ebus.projetoscomputacao.com.br/backend/myID_api.php', {
       method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -45,112 +53,166 @@ export default function Reserva ({navigation}) {
     return () => mounted = false;
   },[]);
 
-  function makeReservation (){
-    fetch("http://192.168.100.6/reserva_api.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        matricula: matricula,
-        horario: horario,
-        origem: origem,
-        destino: destino,
+  useEffect(() => {
+    fetch('http://ebus.projetoscomputacao.com.br/backend/scheduleTrip_api.php')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setdataSource(responseJson);
       })
+      .catch((error) => {
+        Alert.alert('Erro na conexão!', 'Tente novamente!');
+      });
+  },[]);
+
+  useEffect(() => {
+    
+      fetch('http://ebus.projetoscomputacao.com.br/backend/scheduleCheck_api.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }, 
+      body: JSON.stringify({
+        origem: OrigemValue,
+        destino: DestinoValue,
+        data: todayData
+      }),
     })
     .then((response) => response.json())
     .then((responseJson) => {
-      if(responseJson== 'Matrícula inválida!'){
-        Alert.alert('Matrícula inválida!', 'Verifique seus dados.');
-      }
-      else if (responseJson=='Viagem não encontrada, tente novamente!'){
-        Alert.alert('Viagem não encontrada', 'tente novamente!');
-      }
-      else if (responseJson == 'Reserva feita com sucesso!'){
-        setReservado(true);
-        Alert.alert(responseJson);
-      } else if(responseJson == 'Ônibus lotado, tente em outro horário!'){
-        Alert.alert(responseJson);
+      setlistItem(responseJson.horario);
+      setErro('');
+      if (responseJson === 'Viagem não encontrada!'){
+        setErro('Nenhum horário disponível!');
+        setlistItem('');
+      } 
+      else {
+        setlistItem(responseJson);
+        setErro('');
       }
     })
     .catch((error) => {
-      Alert.alert('Erro ao fazer a reserva!');
+      Alert.alert('Erro na conexão!', 'Tente novamente!');
     });
+  
+  }, [OrigemValue, DestinoValue]);
+
+  const DATA = [
+    {
+      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+      title: '',
+    },
+    {
+      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+      title: '',
+    },
+    {
+      id: '58694a0f-3da1-471f-bd96-145571e29d72',
+      title: '',
+    },
+  ];
+
+  function List() {
+    if (erro == 'Nenhum horário disponível!'){
+      return (
+        <SafeAreaView style={{flex: 1}}>
+          <FlatList
+            style={{marginLeft:20}}
+            data={DATA}
+            ListHeaderComponent={Form}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <Text>{item.title}</Text>)}
+          />
+        </SafeAreaView>
+      );
+    } else {
+      return (
+        <SafeAreaView style={{flex: 1}}>
+          <FlatList
+            data={listItem}
+            keyExtractor={item => item.id_viagem}
+            ListHeaderComponent={Form}
+            renderItem={({item}) => (
+              <View style={styles.ListView}>
+                <Text 
+                  style={styles.ItemView}
+                  onPress={() => navigation.navigate('ConfirmReserva',{
+                    id_viagem: item.id_viagem,
+                    id_usuario: idUsuario,
+                    horario: item.horario
+                  })}
+                >{item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}</Text>
+              </View>
+            )}
+          />
+        </SafeAreaView>
+      );
+    }
   }
   
-  if (reservado === false){
-    return(
-      <View style={{flex:1}}>
-      <Header title="Reserva" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
-      <Container>
-      <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-        <Form>
-          <FormInput
-            icon3="laptop" 
-            autoCorrect={true}
-            autoCapitalize="words"
-            placeholder = "Matrícula"
-            onChangeText={(data) => setMatricula(data)}
-          />
-          <FormMaskInput
-            icon3="clock-outline"
-            type={"datetime"}
-            options={{
-              format: "HH:mm",
-            }}
-            value={horario}
-            placeholder="Horário"
-            placeholderTextColor='rgba(0,0,255,0.4)'
-            onChangeText={(data) => setHorario(data)}
-          />
-          <FormInput 
-            icon3="map-marker-minus"
-            autoCorrect={true}
-            autoCapitalize="words"
-            placeholder = "Origem"
-            onChangeText={(data) => setOrigem(data)}
-          />
-          <FormInput
-            icon3="map-marker-radius"
-            autoCorrect={true}
-            autoCapitalize="words"
-            placeholder = "Destino"
-            onChangeText={(data) => setDestino(data)}
-          />
-        </Form>
-        <SubmitView>
-          <SubmitButton
-            onPress={() => setReservado(true)}
-          >Reservar
-          </SubmitButton>
-        </SubmitView>
-      </Container>
-      </View>
-    );
-  } else {
-    return(
+  return(
     <View style={{flex:1}}>
     <Header title="Reserva" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
     <StatusBar backgroundColor="#283593" barStyle="light-content"/>
+    <ScrollView>
     <Container>
       <Form>
-        <FormText icon3="laptop" text={matricula}/>
-        <FormText icon3="clock-outline" text={horario}/>
-        <FormText icon3="map-marker" text={origem}/>
-        <FormText icon3="map-marker-radius" text={destino}/>
-        <FormStatus>
-          <Status>Reservado</Status>
-        </FormStatus>
+        <FormText icon3="laptop" text="Data: " text2={data}/>
+        <PickerContainer>
+          <PickerIcon name="map-marker" size={20} color="rgba(0,0,255,0.6)"/>
+          <Origem>De:</Origem>
+          <Picker
+            style={styles.PickerInput}
+            selectedValue={OrigemValue}
+            onValueChange={(itemvalue, itemIndex) => setOrigemValue(itemvalue)}
+          >
+          {dataSource.map((item, key) => (
+          <Picker.Item label={item.origem} value={item.origem} key={key}/>))}
+          </Picker>
+        </PickerContainer>        
+        <PickerContainer>
+          <PickerIcon name="map-marker-radius" size={20} color="rgba(0,0,255,0.6)"/>
+          <Destino>Para:</Destino>
+          <Picker
+            style={styles.PickerInput}
+            selectedValue={DestinoValue}
+            onValueChange={(itemvalue, itemIndex) => setDestinoValue(itemvalue)}
+          >{dataSource.map((item, key) => (
+            <Picker.Item label={item.destino} value={item.destino} key={key}/>))}
+          </Picker>
+        </PickerContainer>
+        <View style={{justifyContent:'center', alignSelf:'center'}}>
+          <Text style={{fontSize:20, fontWeight:'bold', color: 'rgba(0,0,255,0.6)'}}>Horários</Text>
+        </View>  
       </Form>
-      <SubmitView>
-        <SubmitButton
-          onPress={() => setReservado(false)}
-        >Reservar
-        </SubmitButton>
-      </SubmitView>
+      <List />  
     </Container>
+    </ScrollView>
     </View>
-    );
-  }
+  );
 }
+
+const styles = StyleSheet.create({
+  PickerInput: {
+    alignItems:'center',
+    justifyContent: 'center',
+    width: 220,
+    height: 50,
+    color: 'rgba(0,0,255,0.6)',
+  },
+  ListView: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    alignSelf:'center',
+    width: 150,
+    height: 46,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 15,
+    marginBottom: 10,
+  },
+  ItemView: {
+    fontSize: 18,
+    color: 'rgba(0,0,255,0.6)',
+  }
+});

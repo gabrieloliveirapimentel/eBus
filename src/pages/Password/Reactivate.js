@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Alert, Text} from 'react-native';
+import React, {useState} from 'react';
+import {Alert} from 'react-native';
 import {
   Container,
   Form,
@@ -51,8 +51,7 @@ export default function Reactivate ({navigation}){
       Alert.alert('Senhas diferentes', 'Verifique novamente!');
     }
     else {
-      fetch ('http://192.168.100.6/reactivateAccount_api.php', {
-        //http://mybus.projetoscomputacao.com.br/reactivateAccount_api.php
+      fetch ('http://ebus.projetoscomputacao.com.br/backend/reactivateAccount_api.php', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

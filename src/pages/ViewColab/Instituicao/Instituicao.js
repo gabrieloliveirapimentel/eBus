@@ -53,8 +53,7 @@ export default function Instituicao ({navigation}){
   useEffect(
     thisInst = () => {
       let mounted = true;
-      fetch('http://192.168.100.6/myInst_api.php',{
-        //http://mybus.projetoscomputacao.com.br/myInst_api.php
+      fetch('http://ebus.projetoscomputacao.com.br/backend/myInst_api.php',{
         method: 'POST',
           headers: {
             Accept: 'application/json',
