@@ -52,8 +52,7 @@ export default function SignUp ({navigation}){
   const [heightAlert, setHeightAlert] = useState(0);
 
   useEffect(() => {
-    fetch("http://192.168.100.6/pickerInst_api.php")
-    //http://ebus.projetoscomputacao.com.br/pickerInst_api.php
+    fetch("http://ebus.projetoscomputacao.com.br/backend/pickerInst_api.php")
     .then((response) => response.json())
     .then((responseJson) => {
       setdataSource(responseJson);
@@ -135,8 +134,7 @@ export default function SignUp ({navigation}){
       setHeightAlert(45);
       setTextAlerta('É necessário concordar com a Política de Privacidade.');
     } else {
-      fetch('http://192.168.100.6/insertUsuario_api.php', {
-        //http://ebus.projetoscomputacao.com.br/insertUsuario_api.php
+      fetch('http://ebus.projetoscomputacao.com.br/backend/insertUser_api.php', {
         method: 'POST',
         headers: {
         Accept: 'application/json',

@@ -29,7 +29,7 @@ export default function SignIn ({navigation}){
     else if (email == '') { setLoading(false); Alert.alert('E-mail em branco!','Verifique o campo de e-mail.');}
     else if (senha == '') { setLoading(false); Alert.alert('Senha em branco!','Verifique o campo de senha.');}
     else {
-      fetch ('http://192.168.100.6/loginUsuario2_api.php', {
+      fetch ('http://ebus.projetoscomputacao.com.br/backend/loginUser_api.php', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

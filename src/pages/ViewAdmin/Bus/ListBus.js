@@ -26,8 +26,7 @@ export default function ListBus ({ navigation }) {
   useEffect( 
     thisList = () => {
       setloading(false);
-      fetch('http://192.168.100.6/listBus_api.php', {
-        //http://mybus.projetoscomputacao.com.br/listBus_api.php
+      fetch('http://ebus.projetoscomputacao.com.br/backend/listBus_api.php', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -88,7 +87,7 @@ export default function ListBus ({ navigation }) {
   ];
 
   function List() {
-    if (erro == 'Sem erro'){
+    if (erro == 'Sem erro.'){
       return (
         <FlatList
           refreshing={refreshing}
@@ -99,10 +98,10 @@ export default function ListBus ({ navigation }) {
             <Text onPress={() => navigation.navigate('InfoBus', {
               placa: item.placa,
               linha: item.linha, 
-              numVagas: item.num_vagas, 
+              lugares: item.lugares, 
               motorista: item.nome, 
               disponivel: item.disponibilidade,
-              status: item.status
+              situacao: item.situacao
               })} 
               style={styles.text}>
             {item.placa}

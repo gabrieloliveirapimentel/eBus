@@ -2,26 +2,23 @@ import React, { useState, useEffect, useCallback } from "react";
 import { ActivityIndicator, Alert, FlatList, View} from "react-native";
 import {Fab, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import { Container, Header, Tab, Item, ItemView} from "./styles";
 
 export default function ListColab({ navigation }) {  
+
   const {email} = navigation.state.params;
   const [idUsuario, setIDUsuario] = useState(0);
   const [fkInst, setFKInst] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  const [data2, setData2] = useState();
   const [erro, setErro] = useState('');
 
   function thisList() {};
 
   useEffect(thisList = () => {
     setloading(false);
-    fetch("http://192.168.100.6/verificaID_api.php", {
-      //http://mybus.projetoscomputacao.com.br/verificaID_api.php
+    fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -46,8 +43,7 @@ export default function ListColab({ navigation }) {
   
   useEffect(thisList = () => {
     setloading(false);
-    fetch("http://192.168.100.6/listTrip_api.php",{
-      //http://mybus.projetoscomputacao.com.br/listTrip_api.php
+    fetch("http://ebus.projetoscomputacao.com.br/backend/listTrip_api.php",{
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -126,7 +122,7 @@ export default function ListColab({ navigation }) {
               Text_Origem: item.origem,
               Text_Destino: item.destino,
               Text_Id_Viagem: item.id_viagem,
-              Text_Vagas: item.vagas,
+              Text_Vagas: item.num_vagas,
               Text_Placa: item.fk_Onibus_placa,
               idUsuario: idUsuario,
               })}>

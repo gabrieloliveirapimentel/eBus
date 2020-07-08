@@ -16,8 +16,7 @@ export default function LostPassword ({navigation}){
     if (email === ''){
       Alert.alert('Informe um e-mail válido!');
     } else {
-      fetch ('http://192.168.100.6/changePassword_api.php', {
-        //http://mybus.projetoscomputacao.com.br/changePassword_api.php
+      fetch ('http://ebus.projetoscomputacao.com.br/backend/changePassword_api.php', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

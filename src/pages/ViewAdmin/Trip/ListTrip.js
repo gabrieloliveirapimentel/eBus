@@ -3,10 +3,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { ActivityIndicator, Alert, FlatList, View} from "react-native";
 import {Fab, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-import { format, parseISO } from 'date-fns';
-import moment from 'moment';
-
 import { Container, Header, Tab, ItemView, Item} from "./styles";
 
 export default function ListTrip({ navigation }) {
@@ -17,25 +13,12 @@ export default function ListTrip({ navigation }) {
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [erro, setErro] = useState('');
-  const [color, setColor] = useState('#000');
-
-/*
-  function tete(){
-    
-
-    if (state == true){
-      Alert.alert('Tá errado.');
-    } else {
-      Alert.alert('Dia 2 vem antes mesmo!');
-    }
-  }*/
 
   function thisList() {};
 
   useEffect(thisList = () => {
     setloading(false);
-    fetch("http://192.168.100.6/verificaID_api.php", {
-      //http://mybus.projetoscomputacao.com.br/verificaID_api.php
+    fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -64,8 +47,7 @@ export default function ListTrip({ navigation }) {
 
   useEffect(thisList = () => {
     setloading(false);
-    fetch("http://192.168.100.6/listTrip_api.php",{
-      //http://mybus.projetoscomputacao.com.br/listTrip_api.php
+    fetch("http://ebus.projetoscomputacao.com.br/backend/listTrip_api.php",{
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -123,9 +105,6 @@ export default function ListTrip({ navigation }) {
   ];
 
   function List() {
-
-    const {num} = '1';
-
     if (erro == 'Sem erro.') {
       return (
         <FlatList
@@ -134,23 +113,23 @@ export default function ListTrip({ navigation }) {
           data={dataSource}
           ItemSeparatorComponent={listSeparator}
           renderItem={({ item }) => (
-            <ItemView onPress={
+            <ItemView onPress={() => 
               navigation.navigate("InfoTrip",{
                 Text_Data: item.data,
                 Text_Horario: item.horario,
                 Text_Origem: item.origem,
                 Text_Destino: item.destino,
                 Text_Id_Viagem: item.id_viagem,
-                Text_Vagas: item.vagas,
+                Text_Vagas: item.num_vagas,
                 Text_Placa: item.fk_Onibus_placa,
                 idUsuario: idUsuario,
                 })
               }>
               <Item>
-                <Text style={{marginTop: 10, fontSize: 17, color:(color)}}>De: {item.origem} - Para: {item.destino}</Text>
+                <Text style={{marginTop: 10, fontSize: 17}}>De: {item.origem} - Para: {item.destino}</Text>
               </Item>
               <Item>
-                <Text style={{marginBottom: 10, fontSize: 15, color: (color)}}>
+                <Text style={{marginBottom: 10, fontSize: 15}}>
                   Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
                   Data: {item.data[8]}{item.data[9]}/{item.data[5]}{item.data[6]}/{item.data[0]}{item.data[1]}{item.data[2]}{item.data[3]}
                 </Text>
@@ -163,6 +142,8 @@ export default function ListTrip({ navigation }) {
     } else {
       return (
         <FlatList
+          refreshing={refreshing}
+          onRefresh={onRefresh}
           style={{marginLeft:20}}
           data={DATA}
           keyExtractor={item => item.id}
@@ -172,8 +153,6 @@ export default function ListTrip({ navigation }) {
       );
     }
   }
-
-
 
   if (loading) {
     return (

@@ -19,6 +19,8 @@ import EditProfile from './src/pages/Profile/EditProfile';
 /* userStack */
 import Horario from './src/pages/ViewPassageiro/Horario/Horario';
 import Reserva from './src/pages/ViewPassageiro/Reserva/Reserva';
+import ConfirmReserva from './src/pages/ViewPassageiro/Reserva/ConfirmReserva';
+import ListReserva from './src/pages/ViewPassageiro/Reserva/ListReserva';
 
 /* adminStack */
 import ListTrip from './src/pages/ViewAdmin/Trip/ListTrip';
@@ -57,9 +59,46 @@ const HorarioStack = createStackNavigator({
   },
 });
 
-const MainTabs = createBottomTabNavigator({
+const ReservaStack = createStackNavigator({
   Reserva: {
     screen: Reserva,
+    navigationOptions: { headerShown: false}
+  },
+  ConfirmReserva: {
+    screen: ConfirmReserva,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Reserva",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  },
+  ListReserva: {
+    screen: ListReserva,
+    navigationOptions: {
+      headerBackTitleVisible: false,
+      tabBarVisible: false,
+      title: "Reservas",
+      headerStyle: {
+        backgroundColor: "#283593",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    },
+  }
+})
+
+const MainTabs = createBottomTabNavigator({
+  Reserva: {
+    screen: ReservaStack,
     navigationOptions: {
       headerShown: false,
       tabBarLabel: 'Reserva',

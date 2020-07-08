@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {Alert, Text} from 'react-native';
+import {Alert} from 'react-native';
 import {
   Container,
   Form,
@@ -46,8 +46,7 @@ export default function ChangePassword ({navigation}){
       Alert.alert('Senhas diferentes!')
     }
     else {
-      fetch('http://192.168.100.6/updateSenha_api.php', {
-        //http://mybus.projetoscomputacao.com.br/updateSenha_api.php
+      fetch('http://ebus.projetoscomputacao.com.br/backend/updatePassword_api.php', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

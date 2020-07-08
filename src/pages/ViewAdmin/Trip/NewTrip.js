@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Alert, StyleSheet} from "react-native";
 import {Picker} from 'native-base';
-//import { parseISO, format } from "date-fns";
 
 import {
   NewContainer,
   Form,
   FormInput,
+  FormMaskInput,
+  FormText,
   SignLink,
   SubmitButton,
-  FormMaskInput,
   Placas,
   PickerContainer,
   PickerIcon
 } from "./styles";
 
-import {format, parseISO} from 'date-fns';
+import {format} from 'date-fns';
 
 export default function NewTrip({ navigation }) {
   const {idUsuario} = navigation.state.params;
@@ -33,8 +33,7 @@ export default function NewTrip({ navigation }) {
 
   useEffect(
     (thisList = () => {
-      fetch("http://192.168.100.6/listBus_api.php", {
-        //http://mybus.projetoscomputacao.com.br/listBus_api.php
+      fetch("http://ebus.projetoscomputacao.com.br/backend/listBus_api.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -57,8 +56,7 @@ export default function NewTrip({ navigation }) {
     if (Data == "" || Horario == "" || Origem == "" || Destino == "") {
       Alert.alert("Campos em branco", "Verifique os dados e tente novamente!");
     } else {
-      fetch("http://192.168.100.6/insertTrip_api.php", {
-        //http://mybus.projetoscomputacao.com.br/insertTrip_api.php
+      fetch("http://ebus.projetoscomputacao.com.br/backend/insertTrip_api.php", {
         method: "POST",
         headers: {
           Accept: "application/json",

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { ScrollView, Alert, StyleSheet } from "react-native";
-import { Picker } from 'native-base';
+import React, { useState } from "react";
+import { ScrollView, Alert} from "react-native";
 import { parseISO, format } from "date-fns";
 
 import {
@@ -10,9 +9,6 @@ import {
   SignLink,
   SubmitButton,
   FormMaskInput,
-  PickerContainer,
-  PickerIcon,
-  Placas
 } from "./styles";
 
 export default function EditColab({ navigation }) {
@@ -27,11 +23,10 @@ export default function EditColab({ navigation }) {
   const [Text_Data, setText_Data] = useState(dateCorrect);
 
   function updateTrip() {
-    if (Text_Data === "" || Text_Horario === "" || Text_Origem === "" || Text_Destino === ""){
+    if (Text_Data === "" || Text_Horario === "" || Text_Origem === "" || Text_Destino === "" || Text_Placa === ""){
       Alert.alert("Dados em branco!", "Verifique os campos e tente novamente.");
     } else {
-      fetch("http://192.168.100.6/updateTrip_api.php", {
-        //http://mybus.projetoscomputacao.com.br/updateTrip_api.php
+      fetch("http://ebus.projetoscomputacao.com.br/backend/updateTrip_api.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -125,3 +120,5 @@ export default function EditColab({ navigation }) {
     </ScrollView>
   );
 }
+
+

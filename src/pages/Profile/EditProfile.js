@@ -147,7 +147,7 @@ export default function EditProfile ({navigation}){
     } else if (confirmasenha != senha) {
       Alert.alert('Senhas diferentes!', 'Verifique os campos de senha.');
     } else {
-      fetch('http://mybus.projetoscomputacao.com.br/updateUser_api.php', {
+      fetch('http://ebus.projetoscomputacao.com.br/backend/updateUser_api.php', {
         method: 'POST',
         headers: {
         Accept: 'application/json',
