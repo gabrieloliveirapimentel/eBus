@@ -7,11 +7,17 @@ import Input from '../../../components/InputSignUp';
 import MaskInput from '../../../components/InputMask';
 import Text from '../../../components/FormText';
 import FormHorario from '../../../components/FormHour';
+import {RectButton} from 'react-native-gesture-handler';
 import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 
 export const Container = styled.View`
   flex: 1;
   padding: 0 30px;
+`;
+
+export const ListContainer = styled.View`
+  flex: 1;
+  justify-content: center;
 `;
 
 export const Form = styled.View`
@@ -54,12 +60,6 @@ export const FormStatus = styled.View`
   height: 30px;
 `;
 
-export const Status = styled.Text`
-  font-size: 18px;
-  color: #008000;
-  font-weight: bold;
-`;
-
 export const PickerContainer = styled.View`
   flex-direction: row;
   margin-bottom: 10px;
@@ -88,4 +88,34 @@ export const Destino = styled.Text`
   margin-right: 5px;
   font-size: 16px;
   color: rgba(0,0,255,0.6);
+`;
+
+export const SignLink = styled.TouchableOpacity`
+  margin-top: 5px;
+  margin-bottom: 10px;
+  align-items: center;
+`;
+
+export const SignLinkText = styled.Text`
+  margin-top: 5px;  
+  color: rgba(0,0,255,0.6);
+  font-weight: bold;
+  font-size: 16px;
+`;
+
+export const SignCancelText = styled.Text`
+  margin-top: 5px;  
+  color: rgba(255,0,0,255);
+  font-weight: bold;
+  font-size: 16px;
+`;
+
+export const ItemView = styled(RectButton)`
+  background-color: #e9e9e9;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  align-items: center;
 `;

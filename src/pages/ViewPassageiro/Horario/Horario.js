@@ -130,7 +130,7 @@ export default function Horario ({navigation}){
           data={listItem}
           keyExtractor={item => item.id_viagem}
           renderItem={({item}) => (
-          <Text style={{fontSize: 18, marginLeft:20, marginBottom: 10}}>{item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}</Text>)}
+          <Text style={{fontSize: 20, marginBottom: 10, alignSelf:'center', color:'rgba(0,0,255,0.6)', fontWeight: 'bold'}}>{item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}</Text>)}
         />
       );
     }

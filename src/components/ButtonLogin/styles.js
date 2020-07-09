@@ -17,3 +17,13 @@ export const Text = styled.Text `
   marginLeft: 50px;
   justify-content: center;
 `;
+
+export const LoadingContainer = styled(RectButton)`
+    height: 40px;
+    background: #FFF;
+    border-radius: 25px;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    width: 200px;
+`;
