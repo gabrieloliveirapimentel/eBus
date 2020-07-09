@@ -8,7 +8,7 @@ import {Form, FormInput, Container, SubmitButton, SignLink, SignLinkText} from '
 export default function SignIn ({navigation}){
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [loading, setLoading] = useState (true);
+  const [loading, setLoading] = useState (false);
   const [verificar, setVerificar] = useState (true);
   const [icon, setIcon] = useState('visibility-off');
 
@@ -17,7 +17,6 @@ export default function SignIn ({navigation}){
       Roboto: require('native-base/Fonts/Roboto.ttf'),
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
     })
-    setLoading(false);
   },[]);
 
   function fazerLogin () {
@@ -90,6 +89,8 @@ export default function SignIn ({navigation}){
     }
   }
 
+
+
   function atualizaIcone () {
     if (verificar == true){
       setVerificar(false),
@@ -101,59 +102,52 @@ export default function SignIn ({navigation}){
     }
   }
 
-  if (loading){
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#fff" />
-      </View>
-    );
-  } else {
-    return (
-      <Background>
-      <Container>
-      <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-        <Image 
-          style={styles.tinyLogo}
-          source={require('../../components/assets/logoebus.png')}
+  return (
+    <Background>
+    <Container>
+    <StatusBar backgroundColor="#283593" barStyle="light-content"/>
+      <Image 
+        style={styles.tinyLogo}
+        source={require('../../components/assets/logoebus.png')}
+      />
+      <Form>
+        <FormInput
+          icon= "mail-outline"
+          value={email}  
+          placeholder="E-mail"  
+          keyboardType="email-address"
+          autoCompleteType="email"
+          placeholderTextColor="#fff"
+          onChangeText={(data) => setEmail(data)}
         />
-        <Form>
-          <FormInput
-            icon= "mail-outline"
-            value={email}  
-            placeholder="E-mail"  
-            keyboardType="email-address"
-            autoCompleteType="email"
-            placeholderTextColor="#fff"
-            onChangeText={(data) => setEmail(data)}
-          />
-          <FormInput
-            icon= "lock-outline" 
-            icon2 = {icon} 
-            iconPress={atualizaIcone}
-            placeholder="Senha"  
-            secureTextEntry = {verificar}
-            placeholderTextColor="#fff"
-            onChangeText={(data) => setSenha(data)}
-          />
-        </Form>
-        <SubmitButton
-          icon="arrow-forward"
-          onPress={fazerLogin}>Entrar
-        </SubmitButton>
-        <SignLink>
-          <SignLinkText
-            onPress={() => navigation.navigate('SignUp')}>
-            Cadastrar-se
-          </SignLinkText>
-          <SignLinkText
-            onPress={() => navigation.navigate('LostPassword')}>
-            Esqueceu sua senha?
-          </SignLinkText>
-        </SignLink>
-      </Container>
-      </Background>
-    );
-  }
+        <FormInput
+          icon= "lock-outline" 
+          icon2 = {icon} 
+          iconPress={atualizaIcone}
+          placeholder="Senha"  
+          secureTextEntry = {verificar}
+          placeholderTextColor="#fff"
+          onChangeText={(data) => setSenha(data)}
+        />
+      </Form>
+      <SubmitButton
+        icon="arrow-forward"
+        loading={loading}
+        onPress={fazerLogin}>Entrar
+      </SubmitButton>
+      <SignLink>
+        <SignLinkText
+          onPress={() => navigation.navigate('SignUp')}>
+          Cadastrar-se
+        </SignLinkText>
+        <SignLinkText
+          onPress={() => navigation.navigate('LostPassword')}>
+          Esqueceu sua senha?
+        </SignLinkText>
+      </SignLink>
+    </Container>
+    </Background>
+  );
 }
 
 const styles = StyleSheet.create({

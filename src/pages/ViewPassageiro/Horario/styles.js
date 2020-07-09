@@ -44,6 +44,7 @@ export const TextHorario = styled.Text`
   margin-top: 5px;
   margin-bottom: 10px;
   font-size: 16px;
+  color: rgba(0,0,255,0.6);
 `;
 
 export const Erro = styled.Text`

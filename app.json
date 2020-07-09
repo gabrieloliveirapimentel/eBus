@@ -33,6 +33,7 @@
     "android": {
       "package": "com.cefet.projetoeBusExpo",
       "versionCode": 1,
+      "useNextNotificationsApi": true,
       "adaptiveIcon": {
         "backgroundColor": "#283593",
         "foregroundImage": "./assets/icon.png",
