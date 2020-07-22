@@ -1,16 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, Alert, StatusBar, View, ActivityIndicator} from 'react-native';
+import {Image, StyleSheet, Alert, StatusBar, AsyncStorage, View, Linking} from 'react-native';
 import * as Font from 'expo-font';
-
+import {onSignIn} from '../../services/auth';
+import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 import Background from '../../components/Background';
 import {Form, FormInput, Container, SubmitButton, SignLink, SignLinkText} from './styles';
 
 export default function SignIn ({navigation}){
+  const EMAIL_KEY = "@eBus:email";
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState (false);
   const [verificar, setVerificar] = useState (true);
   const [icon, setIcon] = useState('visibility-off');
+
+  function setEmailKey(email){
+    AsyncStorage.setItem(EMAIL_KEY, email);
+  }
 
   useEffect (() => {
     Font.loadAsync({
@@ -41,13 +47,19 @@ export default function SignIn ({navigation}){
       }).then((response) => response.json())
         .then((responseJson) => {
           if (responseJson == 'Bem-vindo!'){
-            navigation.navigate('Reserva', {email: email});
+            onSignIn().then(() => {
+              setEmailKey(email);
+              navigation.navigate('Reserva');
+              setLoading(false);
+            })
           }
           else if (responseJson == 'Administrador'){
             navigation.navigate('Viagem', {email: email});
+            setLoading(false);
           }
           else if (responseJson == 'Colaborador'){
             navigation.navigate('ViagemColab',{email: email});
+            setLoading(false);
           }
           else if (responseJson == 'Senha incorreta, verifique novamente!'){
             Alert.alert('Senha incorreta!', 'Verifique sua senha e tente novamente.');
@@ -102,8 +114,13 @@ export default function SignIn ({navigation}){
     }
   }
 
+  //help-circle
+
   return (
     <Background>
+     <View style={{marginTop: 20, marginRight: 20, alignSelf:'flex-end'}}>
+        <Icon name="help-circle" size={22} color="#fff" onPress={() => {Linking.openURL('http://ebus.projetoscomputacao.com.br/#contato')}} />
+      </View>
     <Container>
     <StatusBar backgroundColor="#283593" barStyle="light-content"/>
       <Image 

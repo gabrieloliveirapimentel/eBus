@@ -128,13 +128,13 @@ export default function ListReserva ({navigation}) {
 const styles = StyleSheet.create({
   text:{
     fontSize: 18, 
-    color: "rgba(0,0,255,0.6)",
+    color: "rgba(0,0,255,0.8)",
     padding: 10, 
     marginLeft: 20
   },
   header: {
     fontSize: 18, 
-    color: "rgba(0,0,255,0.6)",
+    color: "rgba(0,0,255,1)",
     padding: 10, 
     alignSelf:'center',
     fontWeight:'bold'

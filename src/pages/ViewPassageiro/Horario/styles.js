@@ -24,7 +24,7 @@ export const Origem = styled.Text`
   margin-left: 10px;
   margin-right: 17px;
   font-size: 16px;
-  color: rgba(0,0,255,0.6);
+  color: rgba(0,0,255,0.8);
 `;
 
 export const Destino = styled.Text`
@@ -32,7 +32,7 @@ export const Destino = styled.Text`
   margin-left: 10px;
   margin-right: 5px;
   font-size: 16px;
-  color: rgba(0,0,255,0.6);
+  color: rgba(0,0,255,0.8);
 `;
 
 export const Container = styled.View`
@@ -44,7 +44,7 @@ export const TextHorario = styled.Text`
   margin-top: 5px;
   margin-bottom: 10px;
   font-size: 16px;
-  color: rgba(0,0,255,0.6);
+  color: rgba(0,0,255,1);
 `;
 
 export const Erro = styled.Text`

@@ -137,7 +137,7 @@ export default function ListTrip({ navigation }) {
                   <Text style={{marginTop: 10, fontSize: 17}}>De: {item.origem} - Para: {item.destino}</Text>
                 </Item>
                 <Item>
-                  <Text style={{marginBottom: 10, fontSize: 15}}>
+                  <Text style={{marginBottom: 10, fontSize: 16}}>
                     Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
                     Data: {item.data[8]}{item.data[9]}/{item.data[5]}{item.data[6]}/{item.data[0]}{item.data[1]}{item.data[2]}{item.data[3]}
                   </Text> 
@@ -146,10 +146,10 @@ export default function ListTrip({ navigation }) {
               ) : (
               <ItemView>
                 <Item>
-                  <Text style={{marginTop: 10, fontSize: 17, color:'rgba(0,0,0,0.1)'}}>De: {item.origem} - Para: {item.destino}</Text>
+                  <Text style={{marginTop: 10, fontSize: 17, color:'rgba(0,0,0,0.3)'}}>De: {item.origem} - Para: {item.destino}</Text>
                 </Item>
                 <Item>
-                  <Text style={{marginBottom: 10, fontSize: 15, color:'rgba(0,0,0,0.1)'}}>
+                  <Text style={{marginBottom: 10, fontSize: 16, color:'rgba(0,0,0,0.3)'}}>
                     Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
                     Data: {item.data[8]}{item.data[9]}/{item.data[5]}{item.data[6]}/{item.data[0]}{item.data[1]}{item.data[2]}{item.data[3]}
                   </Text> 

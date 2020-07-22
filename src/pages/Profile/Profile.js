@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect, useCallback} from 'react';
-import {ActivityIndicator, ScrollView, View, RefreshControl, Alert} from 'react-native';
+import {ActivityIndicator, ScrollView, View, RefreshControl, Alert, AsyncStorage} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {onSignOut} from '../../services/auth';
 import {
   Container,
   CustomHeaderProfile,
@@ -14,6 +15,7 @@ import {
 } from './styles';
 
 export default function Profile ({navigation}){
+  const EMAIL_KEY = "@eBus:email";
   const {idUsuario} = navigation.state.params;
   const [email, setEmail] = useState('');
   const [nome, setNome] = useState('');
@@ -125,6 +127,10 @@ export default function Profile ({navigation}){
     
   },[]);
 
+  function goOut(){
+    AsyncStorage.removeItem(EMAIL_KEY).then(onSignOut().then(() => navigation.navigate('SignIn')));
+  }
+
   function sendtoEditProfile(){
     navigation.navigate('EditProfile',{
       send_id: idUsuario,
@@ -154,7 +160,7 @@ export default function Profile ({navigation}){
     if(admin == 1 || colab == 1){
       return (
         <View style={{flex:1}}>
-        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
+        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')} />
         <ScrollView animated='false' refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <Container>
@@ -190,7 +196,7 @@ export default function Profile ({navigation}){
     } else {
       return (
         <View style={{flex:1}}>
-        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
+        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={goOut}/>
         <ScrollView animated='false' refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <Container>
