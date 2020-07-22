@@ -90,6 +90,10 @@ export default function SignUp ({navigation}){
     }
   }
 
+  useEffect(() => {
+    
+  })
+
   function attCEP (){
     if (CEP === ''){
       Alert.alert('CEP em branco!');
@@ -186,7 +190,7 @@ export default function SignUp ({navigation}){
             autoCorrect={true}
             autoCapitalize="sentences"
             placeholder="Nome"
-            placeholderTextColor='rgba(0,0,255,0.2)'
+            placeholderTextColor='rgba(0,0,255,0.4)'
             onChangeText={(data) => setNome(data)}
           />
           <FormInput
@@ -219,9 +223,14 @@ export default function SignUp ({navigation}){
             onChangeText={(data) => setConfirmaSenha(data)}
           />
           <PickerContainer>
-            <PickerIcon name="school" size={20} color="rgba(0,0,255,0.6)"/>
+            <PickerIcon name="school" size={20} color="rgba(0,0,255,1)"/>
             <Picker
-              style={{color:"rgba(0,0,255,0.6)", marginLeft: 5}}
+              placeholder="Instituição"
+              headerBackButtonText="Voltar"
+              iosHeader={<Text style={{fontSize:18}}>Instituição</Text>}
+              textStyle={{color:'rgba(0,0,255,0.8)'}}
+              placeholderStyle={{color:'rgba(0,0,255,0.4)'}}
+              style={{color:"rgba(0,0,255,0.8)", marginLeft: 5}}
               selectedValue={idInst}
               onValueChange={(itemvalue) => setIDInst(itemvalue)}
             >
@@ -277,7 +286,7 @@ export default function SignUp ({navigation}){
             type={"custom"}
             keyboardType="number-pad"
             placeholder="Número"
-            placeholderTextColor="rgba(0,0,255,0.4)"
+            placeholderTextColor='rgba(0,0,255,0.4)'
             onChangeText={(data) => setNumero(data)}
           />
           <FormInput

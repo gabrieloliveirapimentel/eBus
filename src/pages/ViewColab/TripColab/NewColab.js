@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Alert, StyleSheet} from "react-native";
-import { Picker } from 'native-base';
+import { Picker, Text} from 'native-base';
 import { format } from "date-fns";
 
 import {
   NewContainer,
   Form,
   FormInput,
-  FormText,
   SignLink,
   SubmitButton,
   FormMaskInput,
@@ -55,8 +54,7 @@ export default function NewColab({ navigation }) {
     if (Data == "" || Horario == "" || Origem == "" || Destino == "") {
       Alert.alert("Campos em branco", "Verifique os dados e tente novamente!");
     } else {
-      fetch("http://192.168.100.6/insertTrip_api.php", {
-        //http://mybus.projetoscomputacao.com.br/insertTrip_api.php
+      fetch("http://ebus.projetoscomputacao.com.br/backend/insertTrip_api.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -130,9 +128,14 @@ export default function NewColab({ navigation }) {
             onChangeText={(data) => setDestino(data)}
           />
           <PickerContainer>
-            <PickerIcon name="bus" size={20} color="rgba(0,0,255,0.8)"/>
+            <PickerIcon name="bus" size={20} color="rgba(0,0,255,1)"/>
             <Placas>Ônibus: </Placas>
             <Picker
+              placeholder="Ônibus"
+              headerBackButtonText="Voltar"
+              iosHeader={<Text style={{fontSize:18}}>Ônibus</Text>}
+              textStyle={{color:'rgba(0,0,255,0.6)'}}
+              placeholderStyle={{color:'rgba(0,0,255,0.6)'}}
               style={styles.PickerInput}
               selectedValue={Placa}
               onValueChange={(itemvalue, itemIndex) => setPlaca(itemvalue)}

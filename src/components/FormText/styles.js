@@ -12,7 +12,7 @@ export const Container = styled.View`
 `;
 
 export const Form = styled.Text`
-  font-size: 15px;
-  color: rgba(0,0,255,0.6);
+  font-size: 16px;
+  color: rgba(0,0,255,0.8);
   margin-left: 10px;
 `;

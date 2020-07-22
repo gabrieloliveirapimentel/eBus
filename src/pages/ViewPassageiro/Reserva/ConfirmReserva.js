@@ -14,7 +14,6 @@ export default function ConfirmReserva ({navigation}) {
 
   const today = new Date();
   const data = format(today, 'dd/MM/yyyy');
-  const todayData = format(today, 'dd-MM-yyyy');
 
   useEffect(() => {
       fetch('http://ebus.projetoscomputacao.com.br/backend/myReserva_api.php', {
@@ -99,7 +98,7 @@ export default function ConfirmReserva ({navigation}) {
         <Form>
           <FormText icon="computer" text="Matrícula: " text2={matricula}/>
           <FormText icon3="calendar" text="Data: " text2={data}/>
-          <FormText icon3="clock-outline" text="Data: " text2={horario}/>
+          <FormText icon3="clock-outline" text="Horário: " text2={horario}/>
           <FormText icon3="map-marker" text="De: " text2={origem}/>
           <FormText icon3="map-marker-radius" text="Para: " text2={destino} />
         </Form>

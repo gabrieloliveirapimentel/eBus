@@ -3,6 +3,8 @@ import { ActivityIndicator, Alert, FlatList, View} from "react-native";
 import {Fab, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Container, Header, Tab, Item, ItemView} from "./styles";
+import moment from 'moment';
+import {format} from 'date-fns';
 
 export default function ListColab({ navigation }) {  
 
@@ -13,6 +15,9 @@ export default function ListColab({ navigation }) {
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [erro, setErro] = useState('');
+
+  const date = new Date();
+  const newDate = format(date, 'yyyy-MM-dd');
 
   function thisList() {};
 
@@ -115,27 +120,44 @@ export default function ListColab({ navigation }) {
           data={dataSource}
           ItemSeparatorComponent={listSeparator}
           renderItem={({ item }) => (
-            <ItemView onPress={() => 
-              navigation.navigate("InfoColab",{
-              Text_Data: item.data,
-              Text_Horario: item.horario,
-              Text_Origem: item.origem,
-              Text_Destino: item.destino,
-              Text_Id_Viagem: item.id_viagem,
-              Text_Vagas: item.num_vagas,
-              Text_Placa: item.fk_Onibus_placa,
-              idUsuario: idUsuario,
-              })}>
-              <Item>
-                <Text style={{marginTop: 10, fontSize: 17}}>De: {item.origem} - Para: {item.destino}</Text>
-              </Item>
-              <Item>
-                <Text style={{marginBottom: 10, fontSize: 15}}>
-                  Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
-                  Data: {item.data[8]}{item.data[9]}/{item.data[5]}{item.data[6]}/{item.data[0]}{item.data[1]}{item.data[2]}{item.data[3]}
-                </Text>
-              </Item>
-            </ItemView>
+            <View>
+              { moment(newDate).isSameOrBefore(item.data) ? (
+                <ItemView onPress={() => 
+                navigation.navigate("InfoColab",{
+                  Text_Data: item.data,
+                  Text_Horario: item.horario,
+                  Text_Origem: item.origem,
+                  Text_Destino: item.destino,
+                  Text_Id_Viagem: item.id_viagem,
+                  Text_Vagas: item.num_vagas,
+                  Text_Placa: item.fk_Onibus_placa,
+                  idUsuario: idUsuario,
+                  })
+                }>
+                <Item>
+                  <Text style={{marginTop: 10, fontSize: 17}}>De: {item.origem} - Para: {item.destino}</Text>
+                </Item>
+                <Item>
+                  <Text style={{marginBottom: 10, fontSize: 16}}>
+                    Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
+                    Data: {item.data[8]}{item.data[9]}/{item.data[5]}{item.data[6]}/{item.data[0]}{item.data[1]}{item.data[2]}{item.data[3]}
+                  </Text> 
+                </Item>
+              </ItemView>
+              ) : (
+              <ItemView>
+                <Item>
+                  <Text style={{marginTop: 10, fontSize: 17, color:'rgba(0,0,0,0.3)'}}>De: {item.origem} - Para: {item.destino}</Text>
+                </Item>
+                <Item>
+                  <Text style={{marginBottom: 10, fontSize: 16, color:'rgba(0,0,0,0.3)'}}>
+                    Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
+                    Data: {item.data[8]}{item.data[9]}/{item.data[5]}{item.data[6]}/{item.data[0]}{item.data[1]}{item.data[2]}{item.data[3]}
+                  </Text> 
+                </Item>
+              </ItemView>
+              )}
+            </View>
           )}
           keyExtractor={(item) => item.id_viagem}
         />

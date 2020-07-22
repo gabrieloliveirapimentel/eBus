@@ -1,7 +1,6 @@
 import React from 'react';
-import propTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 
 Icon.loadFont();
 

@@ -8,7 +8,6 @@ import {
   Alert,
   ScrollView,
   RefreshControl,
-  SafeAreaView
 } from 'react-native';
 
 import {
@@ -130,7 +129,7 @@ export default function Horario ({navigation}){
           data={listItem}
           keyExtractor={item => item.id_viagem}
           renderItem={({item}) => (
-          <Text style={{fontSize: 20, marginBottom: 10, alignSelf:'center', color:'rgba(0,0,255,0.6)', fontWeight: 'bold'}}>{item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}</Text>)}
+          <Text style={{fontSize: 20, marginBottom: 10, alignSelf:'center', color:'rgba(0,0,255,0.8)', fontWeight: 'bold'}}>{item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}</Text>)}
         />
       );
     }
@@ -142,14 +141,18 @@ export default function Horario ({navigation}){
   }, [refreshing]);
 
   return (
-    <SafeAreaView>
     <ScrollView animated='false'contentContainerStyle={{flex:1}} refreshControl={
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
     <Container>
       <PickerContainer>
-        <PickerIcon name="map-marker" size={20} color="rgba(0,0,255,0.6)"/>
+        <PickerIcon name="map-marker" size={20} color="rgba(0,0,255,0.8)"/>
         <Origem>De:</Origem>
         <Picker
+          placeholder="Origem"
+          textStyle={{color:'rgba(0,0,255,0.8)'}}
+          headerBackButtonText="Voltar"
+          iosHeader={<Text style={{fontSize:18}}>Origem</Text>}
+          placeholderStyle={{color:'rgba(0,0,255,0.8)'}}
           style={styles.PickerInput}
           selectedValue={OrigemValue}
           onValueChange={(itemvalue, itemIndex) => setOrigemValue(itemvalue)}
@@ -160,9 +163,14 @@ export default function Horario ({navigation}){
       </PickerContainer>
       
       <PickerContainer>
-      <PickerIcon name="map-marker-radius" size={20} color="rgba(0,0,255,0.6)"/>
+      <PickerIcon name="map-marker-radius" size={20} color="rgba(0,0,255,0.8)"/>
       <Destino>Para:</Destino>
       <Picker
+        placeholder="Destino"
+        headerBackButtonText="Voltar"
+        iosHeader={<Text style={{fontSize:18}}>Destino</Text>}
+        textStyle={{color:'rgba(0,0,255,0.8)'}}
+        placeholderStyle={{color:'rgba(0,0,255,0.8)'}}
         style={styles.PickerInput}
         selectedValue={DestinoValue}
         onValueChange={(itemvalue, itemIndex) => setDestinoValue(itemvalue)}
@@ -172,11 +180,11 @@ export default function Horario ({navigation}){
       </PickerContainer>
       <IconView>
         <Left>
-          <Icon style={{marginLeft: 10}} color="rgba(0,0,255,0.6)" name="arrow-left-circle-outline" size={24} onPress={decrease} />
+          <Icon style={{marginLeft: 10}} color="rgba(0,0,255,1)" name="arrow-left-circle-outline" size={24} onPress={decrease} />
         </Left>
-        <Text style={{color:'rgba(0,0,255,0.6)'}}>{todayCorrect}</Text>
+        <Text style={{color:'rgba(0,0,255,1)'}}>{todayCorrect}</Text>
         <Right>
-          <Icon style={{marginRight: 10}} color="rgba(0,0,255,0.6)" name="arrow-right-circle-outline" size={24} onPress={increase} />
+          <Icon style={{marginRight: 10}} color="rgba(0,0,255,1)" name="arrow-right-circle-outline" size={24} onPress={increase} />
         </Right>
       </IconView>
       <Erro>{erro}</Erro>
@@ -184,7 +192,6 @@ export default function Horario ({navigation}){
       <List />
     </Container>
     </ScrollView>
-    </SafeAreaView>
   );
 }
 
@@ -194,7 +201,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 240,
     height: 50,
-    color: 'rgba(0,0,255,0.6)',
+    color: 'rgba(0,0,255,1)',
   }
 });
 

@@ -1,6 +1,4 @@
-/* eslint-disable prettier/prettier */
 import React, {forwardRef} from 'react';
-import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 Icon.loadFont();
@@ -21,17 +19,4 @@ function InputLogin({style, icon, icon2, iconPress, ...rest}, ref) {
   );
 }
 
-/*
-InputLogin.PropTypes = {
-  icon: PropTypes.string,
-  icon2: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-};
-
-InputLogin.defaultProps = {
-  icon: null,
-  icon2: null,
-  style: {},
-};
-*/
 export default forwardRef(InputLogin);

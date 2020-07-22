@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, Alert, StyleSheet} from "react-native";
-import {Picker} from 'native-base';
+import {Picker, Text} from 'native-base';
 
 import {
   NewContainer,
   Form,
   FormInput,
   FormMaskInput,
-  FormText,
   SignLink,
   SubmitButton,
   Placas,
@@ -130,9 +129,14 @@ export default function NewTrip({ navigation }) {
             onChangeText={(data) => setDestino(data)}
           />
           <PickerContainer>
-            <PickerIcon name="bus" size={20} color="rgba(0,0,255,0.8)"/>
+            <PickerIcon name="bus" size={20} color="rgba(0,0,255,1)"/>
             <Placas>Ônibus: </Placas>
             <Picker
+              placeholder="Ônibus"
+              headerBackButtonText="Voltar"
+              iosHeader={<Text style={{fontSize:18}}>Ônibus</Text>}
+              placeholderStyle={{color:'rgba(0,0,255,0.6)'}}
+              textStyle={{color:'rgba(0,0,255,0.6)'}}
               style={styles.PickerInput}
               selectedValue={Placa}
               onValueChange={(itemvalue, itemIndex) => setPlaca(itemvalue)}
