@@ -52,19 +52,6 @@ export default function ListReserva ({navigation}) {
     thisList();   
   }, [refreshing]);
 
-  function listSeparator(){
-    return (
-      <View 
-        style={{
-          backgroundColor:'rgba(0,0,0,0.1)',
-          height:1,
-          width: 330,
-          alignSelf:'center'
-        }}
-      />
-    );
-  }
-
   const DATA = [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -79,11 +66,10 @@ export default function ListReserva ({navigation}) {
           refreshing={refreshing}
           onRefresh={onRefresh}
           data={dataSource}
-          ItemSeparatorComponent={listSeparator}
           renderItem={({item}) => (
             <ItemView onPress={() => navigation.navigate('ConfirmReserva', {idUsuario: idUsuario, horario: item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]})}>
               <Text style={styles.text}>
-                {item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}
+                Horário: {item.horario[0]+item.horario[1]+item.horario[2]+item.horario[3]+item.horario[4]}
               </Text>
             </ItemView>
           )}

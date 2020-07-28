@@ -158,19 +158,6 @@ export default function Reserva ({navigation}) {
     }
   },[idEnd]);
 
-  function listSeparator(){
-    return (
-      <View 
-        style={{
-          backgroundColor:'rgba(0,0,0,0.1)',
-          height:1,
-          width: 250,
-          alignSelf:'center'
-        }}
-      />
-    );
-  }
-
   const DATA = [
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
@@ -193,30 +180,29 @@ export default function Reserva ({navigation}) {
           refreshing={refreshing}
           onRefresh={onRefresh}
           data={dataSource}
-          ItemSeparatorComponent={listSeparator}
           renderItem={({ item }) => (
 
             item.num_vagas == 0 ? 
 
             <ItemView onPress={() => Alert.alert('Ônibus lotado!','Tente fazer reserva em outro horário.')}>
             <Item>
-              <Text style={{marginTop: 10, fontSize: 18, color:'rgba(0,0,255,0.8)'}}>De: {item.origem} - Para: {item.destino}</Text>
+              <Text style={{marginTop: 10, fontSize: 17, color:'rgba(0,0,255,0.8)'}}>De: {item.origem} - Para: {item.destino}</Text>
             </Item>
             <Item>
-              <Text style={{marginBottom: 10, fontSize: 16, color:'rgba(0,0,255,0.8)'}}>
+              <Text style={{marginBottom: 10, fontSize: 15, color:'rgba(0,0,255,0.8)'}}>
               Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - 
               </Text>
-              <Text style={{fontSize: 16, color: 'rgba(255,0,0,255)', fontWeight:'bold'}}> Ônibus lotado
+              <Text style={{fontSize: 15, color: 'rgba(255,0,0,255)', fontWeight:'bold'}}> Ônibus lotado
               </Text>
             </Item>
           </ItemView>
              : 
               <ItemView onPress={() => alertReserva(item.horario,item.origem, item.destino)}>
                 <Item>
-                  <Text style={{marginTop: 10, fontSize: 18, color:'rgba(0,0,255,0.8)'}}>De: {item.origem} - Para: {item.destino}</Text>
+                  <Text style={{marginTop: 10, fontSize: 17, color:'rgba(0,0,255,0.8)'}}>De: {item.origem} - Para: {item.destino}</Text>
                 </Item>
                 <Item>
-                  <Text style={{marginBottom: 10, fontSize: 16, color:'rgba(0,0,255,0.8)'}}>
+                  <Text style={{marginBottom: 10, fontSize: 15, color:'rgba(0,0,255,0.8)'}}>
                     Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - Vagas disponíveis: {item.num_vagas}
                   </Text>
                 </Item>

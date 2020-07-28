@@ -9,7 +9,6 @@ import {Icon} from 'react-native-elements';
 import SignIn from './src/pages/SignIn/SignIn';
 import SignUp from './src/pages/SignUp/SignUp';
 import LostPassword from './src/pages/Password/LostPassword';
-import ChangePassword from './src/pages/Password/ChangePassword';
 import Reactivate from './src/pages/Password/Reactivate';
 
 /* allStack */
@@ -403,17 +402,6 @@ const entradaStack = createStackNavigator({
     screen: LostPassword,
     navigationOptions: {
       title: 'Esqueci minha senha',
-      headerBackTitleVisible: false,
-      headerStyle: {
-        backgroundColor: '#283593',
-      },
-      headerTintColor: '#fff',
-    }
-  },
-  ChangePassword:{
-    screen: ChangePassword,
-    navigationOptions: {
-      title: 'Trocar minha senha',
       headerBackTitleVisible: false,
       headerStyle: {
         backgroundColor: '#283593',

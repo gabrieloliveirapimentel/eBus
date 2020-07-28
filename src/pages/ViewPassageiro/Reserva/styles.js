@@ -49,15 +49,14 @@ export const SignCancelText = styled.Text`
 
 export const ItemView = styled(RectButton)`
   background-color: #e9e9e9;
-  margin-left: 40px;
-  margin-right: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
   margin-top: 10px;
-  margin-bottom: 10px;
   border-radius: 15px;
   align-items: center;
 `;
 
 export const Item = styled.View`
   flex-direction: row;
-  margin-left: 20px;
+  margin-left: 10px;
 `;
