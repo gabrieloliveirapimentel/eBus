@@ -10,13 +10,12 @@ import {
 
 export default function LostPassword ({navigation}){
   const [email, setEmail] = useState('');
-  const [idUsuario, setidUsuario] = useState(0);
 
   function changePassword () {
     if (email === ''){
       Alert.alert('Informe um e-mail válido!');
     } else {
-      fetch ('http://ebus.projetoscomputacao.com.br/backend/changePassword_api.php', {
+      fetch ('http://ebus.projetoscomputacao.com.br/backend/solicita-password_api.php', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -27,12 +26,14 @@ export default function LostPassword ({navigation}){
         })
       }).then((response) => response.json())
         .then((responseJson) => {
-          if (responseJson === 'E-mail não cadastrado!'){
-            Alert.alert(responseJson);
-          } else {
-            setidUsuario(responseJson.id_usuario);
-            navigation.navigate('ChangePassword',{idUsuario:idUsuario})
-        }
+          if (responseJson === 'Usuário não encontrado!'){
+            Alert.alert('Usuário não encontrado!', 'Digite um e-mail válido e tente novamente.');
+          } else if (responseJson === 'Solicitação feita com sucesso!') {
+            Alert.alert('Solicitação realizada com sucesso!','Agora confira seu e-mail.');
+            navigation.goBack();
+          } else if (responseJson === 'Erro na solicitação!'){
+            Alert.alert('Erro na solicitação!','Confira seu e-mail e tente novamente.');
+          }
       }).catch((error) => {
         Alert.alert('Erro na conexão', 'Verifique sua internet!');
       });
