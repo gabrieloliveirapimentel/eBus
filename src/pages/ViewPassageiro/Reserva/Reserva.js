@@ -2,19 +2,16 @@ import React, {useState, useEffect, useCallback} from 'react';
 import { View, StatusBar, Alert, StyleSheet, ScrollView, ActivityIndicator, AsyncStorage, FlatList} from 'react-native';
 import { Text} from 'native-base';
 import {format} from 'date-fns';
+import moment from 'moment';
 import pt from 'date-fns/locale/pt-BR';
 import {
   Header,
   Item,
   ItemView,
-  SignLink,
-  SignLinkText
 } from './styles';
 
 export default function Reserva ({navigation}) {
-  const [email, setEmail] = useState('');
   const [idUsuario, setIdUsuario] = useState(0);
-  const [idEnd, setIdEnd] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -22,47 +19,17 @@ export default function Reserva ({navigation}) {
 
   const today = new Date();
   const data = format(today, "dd 'de' MMMM' de 'yyyy'",{locale: pt});
-  const todayData = format(today, 'dd-MM-yyyy');
+  const todayData = format(today, 'dd-MM-yyyy',{locale: pt});
+
+  const todayHour = moment(today).format("HH:mm:ss",{locale: pt});
+  const todayData3 = moment(today).format("yyyy-MM-DD",{locale: pt});
+  const todayCorrect = todayData3 + ' ' + todayHour;
+
+  function thisList(){}
 
   async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:email');
-    setEmail(token);
-  }
-
-  function goToListReserva(){
-    navigation.navigate('ListReserva',{
-      idUsuario: idUsuario
-    });
-  }
-
-  const thisList = () => {
-    setloading(false);
-    if (idEnd != 0 && idEnd != ''){
-      fetch('http://ebus.projetoscomputacao.com.br/backend/listTripReserva_api.php', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        fk_idEnd: idEnd,
-      })
-      }).then((response) => response.json())
-      .then((responseJson) => {
-        if (responseJson == 'Nenhuma viagem encontrada.'){
-          setErro('Erro.');
-          setloading(false);
-        } else {
-          setErro('Sem erro.');
-          setdataSource(responseJson);
-          setloading(false);
-        }
-      }
-    ).catch((error) => {
-      Alert.alert('Erro na conexão!', 'Verifique sua internet!');
-      setloading(false);
-    })
-    }
+    let token = await AsyncStorage.getItem('@eBus:id');
+    setIdUsuario(token);
   }
 
   const onRefresh = useCallback(() => {
@@ -73,24 +40,39 @@ export default function Reserva ({navigation}) {
 
   useEffect(() => {
     getItem();
-    fetch('http://ebus.projetoscomputacao.com.br/backend/myID_api.php', {
-      method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-        })
-      }).then((response) => response.json())
-        .then((resultado) => {
-          setIdUsuario(resultado.id_usuario);
-          setIdEnd(resultado.fk_Endereco_id_endereco);
-      }).catch((error) => {
-          Alert.alert('Erro na conexão!', 'Verifique sua internet');  
-    });
+  },[]);
+
+  useEffect(thisList = () => {
     setloading(false);
-  },[email]);
+      fetch('http://ebus.projetoscomputacao.com.br/backend/listTripReserva_api.php', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id_usuario: idUsuario,
+      })
+      }).then((response) => response.json())
+      .then((responseJson) => {
+          if (responseJson == 'Nenhuma viagem encontrada.'){
+            setErro('Erro.');
+            setloading(false);
+          } else if (responseJson == 'Erro na busca de reservas.') {
+            setErro('Erro.');
+            setloading(false);
+          }
+          else {
+            setErro('Sem erro.');
+            setdataSource(responseJson);
+            setloading(false);
+          }
+        }
+    ).catch((error) => {
+      Alert.alert('Erro na conexão!', 'Verifique sua internet!');
+      setloading(false);
+    })
+  },[erro]);
 
   function alertReserva(horario, origem, destino){
     return (
@@ -110,9 +92,6 @@ export default function Reserva ({navigation}) {
   }
 
   function makeReserva(horario, origem, destino){
-    if (horario == 'Selecione um horário'){
-      Alert.alert('Horário inválido!','Selecione um horário para fazer a reserva.');
-    } else {
       fetch("http://ebus.projetoscomputacao.com.br/backend/makeReserva_api.php", {
         method: "POST",
         headers: {
@@ -131,6 +110,8 @@ export default function Reserva ({navigation}) {
         .then((responseJson) => {
           if (responseJson == 'Reserva já feita!'){
             Alert.alert('Erro ao fazer reserva!','Reserva já feita para essa viagem!');
+          } else if(responseJson == 'Número máximo de reservas já feito!'){
+            Alert.alert('Número máximo de reservas atingido!','No momento, é permitido que cada usuário faça tenha apenas 2 reservas por dia.'+'\n\n'+'Mas não se preocupe, se uma de suas reservas for de horário anterior ao atual, ela é removida automaticamente, permitindo novas reservas.');
           } else if (responseJson == "Ônibus lotado, tente em outro horário!") {
             Alert.alert('Viagem lotada!', 'Tente novamente em outro horário!');
           } else if (responseJson == 'Viagem indisponível, tente em outro horário!'){
@@ -144,19 +125,11 @@ export default function Reserva ({navigation}) {
           } else {
             Alert.alert(responseJson);
           }
-          // Showing response message coming from server after inserting records.
         })
         .catch((error) => {
           Alert.alert("Erro na conexão", "Verifique sua internet!");
         });
-    }
   }
-
-  useEffect(() => {
-    if (idEnd != 0 && idEnd != ''){
-      thisList();
-    }
-  },[idEnd]);
 
   const DATA = [
     {
@@ -181,6 +154,19 @@ export default function Reserva ({navigation}) {
           onRefresh={onRefresh}
           data={dataSource}
           renderItem={({ item }) => (
+            moment(todayData3+' '+item.horario).isBefore(todayCorrect) ? 
+            <ItemView onPress={() => Alert.alert('Viagem já realizada!', 'Tente novamente em outro horário.')}>
+              <Item>
+                <Text style={{marginTop: 10, fontSize: 17, color:'rgba(0,0,0,0.3)'}}>De: {item.origem} - Para: {item.destino}</Text>
+              </Item>
+              <Item>
+                <Text style={{marginBottom: 10, fontSize: 15, color:'rgba(0,0,0,0.3)'}}>
+                  Horário: {item.horario[0]}{item.horario[1]}{item.horario[2]}{item.horario[3]}{item.horario[4]} - Vagas disponíveis: {item.num_vagas}
+                </Text>
+              </Item>
+            </ItemView>
+            
+            :
 
             item.num_vagas == 0 ? 
 
@@ -208,7 +194,6 @@ export default function Reserva ({navigation}) {
                 </Item>
               </ItemView>
             
-            
           )}
           keyExtractor={(item) => item.id_viagem}
         />
@@ -229,27 +214,23 @@ export default function Reserva ({navigation}) {
       );
     }
   }
-  
-  if (loading){
+
+  if (loading) {
     return (
-      <View style={{flex:1, justifyContent: 'center'}}>
+      <View>
         <ActivityIndicator size="large" color="#283593" />
       </View>
     );
   } else {
-      return(
+    return (
       <View style={{flex:1}}>
-      <Header title="Reserva" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
-      <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-      <ScrollView>
-          <Text style={styles.header}>{data}</Text>
-          <List />
-        <SignLink>
-          <SignLinkText onPress={goToListReserva}>Já fez sua reserva?</SignLinkText>
-        </SignLink>
-      </ScrollView>
+        <Header title="Reservar" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
+        <Text style={styles.header}>{idUsuario}</Text>
+        <Text style={styles.header}>{data}</Text>
+        <StatusBar backgroundColor="#283593" barStyle="light-content"/>
+        <List />
       </View>
-    );
+      );
   }
 }
 

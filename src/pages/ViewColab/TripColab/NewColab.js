@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ScrollView, Alert, StyleSheet} from "react-native";
 import { Picker, Text} from 'native-base';
 import { format } from "date-fns";
+import pt from 'date-fns/locale/pt-BR';
+import moment from 'moment';
 
 import {
   NewContainer,
@@ -26,6 +28,11 @@ export default function NewColab({ navigation }) {
   const today = new Date();
   const todayCorrect = format(today, 'dd-MM-yyyy');
   const [Data,setData] = useState(todayCorrect);
+
+  const todayHour = moment(today).format("HH:mm:ss",{locale: pt});
+  const Hour = moment(today).format("HH:mm",{locale: pt});
+  const todayData = moment(today).format("yyyy-MM-DD",{locale: pt});
+  const todayVerified = todayData + ' ' + todayHour;
 
   function thisList() {}
 
@@ -54,7 +61,10 @@ export default function NewColab({ navigation }) {
     if (Data == "" || Horario == "" || Origem == "" || Destino == "") {
       Alert.alert("Campos em branco", "Verifique os dados e tente novamente!");
     } else {
-      fetch("http://ebus.projetoscomputacao.com.br/backend/insertTrip_api.php", {
+      if (moment(todayData+' '+Horario+':00').isBefore(todayVerified) == true){
+        Alert.alert('Horário inválido!','Só é possível cadastrar viagens com horário a partir das '+Hour+'.');
+      } else {
+        fetch("http://ebus.projetoscomputacao.com.br/backend/insertTrip_api.php", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -69,7 +79,7 @@ export default function NewColab({ navigation }) {
           placa: Placa
         }),
       })
-        .then((response) => response.json())
+      .then((response) => response.json())
         .then((responseJson) => {
           if (responseJson == "Viagem cadastrada!") {
             Alert.alert(responseJson);
@@ -79,11 +89,11 @@ export default function NewColab({ navigation }) {
           } else {
             Alert.alert(responseJson);
           }
-          // Showing response message coming from server after inserting records.
         })
         .catch((error) => {
           Alert.alert("Erro na conexão", "Verifique sua internet!");
         });
+      }
     }
   }
 

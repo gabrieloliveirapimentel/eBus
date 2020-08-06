@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect, useCallback } from "react";
-import { ActivityIndicator, Alert, FlatList, View} from "react-native";
+import { ActivityIndicator, Alert, FlatList, View, AsyncStorage} from "react-native";
 import {Fab, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Container, Header, Tab, ItemView, Item} from "./styles";
@@ -8,8 +8,7 @@ import moment from 'moment';
 import {format} from 'date-fns';
 
 export default function ListTrip({ navigation }) {
-  
-  const {email} = navigation.state.params;
+  const [email, setEmail] = useState('');
   const [idUsuario, setIDUsuario] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
@@ -19,11 +18,15 @@ export default function ListTrip({ navigation }) {
   const date = new Date();
   const newDate = format(date, 'yyyy-MM-dd');
   
+  async function getItem () {
+    let token = await AsyncStorage.getItem('@eBus:admin');
+    setEmail(token);
+  }
 
   function thisList() {};
 
-  useEffect(thisList = () => {
-    setloading(false);
+  useEffect(() => {
+    getItem();
     fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
       method: "POST",
       headers: {
@@ -43,7 +46,7 @@ export default function ListTrip({ navigation }) {
         setloading(false); 
       }); 
     
-  }, []);
+  }, [email]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -66,10 +69,10 @@ export default function ListTrip({ navigation }) {
       .then((responseJson) => {
         if (responseJson == 'Nenhuma viagem encontrada.'){
           setErro('Erro.');
-          Alert.alert('Nenhuma viagem cadastrada!','Faça o cadastrado de viagens.');
+          setloading(false);
         } else if (responseJson == 'Nenhum dado encontrado.'){
           setErro('Erro.');
-          Alert.alert(responseJson);
+          setloading(false);
         } else {
           setErro('Sem erro.');
           setdataSource(responseJson);
@@ -80,7 +83,7 @@ export default function ListTrip({ navigation }) {
         Alert.alert("Erro na conexão!", "Verifique sua internet");
         setloading(false);
       });
-  },[]);
+  },[erro]);
 
   function listSeparator(){
     return (
@@ -101,12 +104,8 @@ export default function ListTrip({ navigation }) {
       title: '',
     },
     {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: '',
-    },
-    {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: '',
+      title: 'Nenhuma viagem cadastrada!',
     },
   ];
 
@@ -170,7 +169,7 @@ export default function ListTrip({ navigation }) {
           data={DATA}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <Text>{item.title}</Text>)}
+            <Text style={{fontSize: 16, color:'rgba(255,0,0,255)', fontWeight:'bold', alignSelf: 'center'}}>{item.title}</Text>)}
         />  
       );
     }
@@ -193,16 +192,10 @@ export default function ListTrip({ navigation }) {
         <List />
         <Fab
           onPress={() => navigation.navigate("NewTrip", { idUsuario: idUsuario })}
-          style={{ backgroundColor: "#283593", marginBottom: 50 }}
+          style={{ backgroundColor: "#283593"}}
           position="bottomRight"
         ><Icon name="add" color="#fff" />
         </Fab>
-        <Tab
-          onPress1={() => {}}
-          color1="#fff"
-          onPress2={() => navigation.navigate("Onibus", { idUsuario: idUsuario })}
-          color2="rgba(255,255,255,0.5)"
-        />
         </Container>
       );
   }

@@ -2,6 +2,7 @@
 import styled from 'styled-components/native';
 import {Platform} from 'react-native';
 import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
+import CustomHeader from '../../../components/CustomHeader';
 
 export const PickerContainer = styled.View`
   flex-direction: row;
@@ -18,6 +19,10 @@ export const PickerIcon = styled(Icon)`
   justify-content: center;
   align-self: center;
 `;
+
+export const Header = styled(CustomHeader)`
+`;
+
 
 export const Origem = styled.Text`
   align-self: center;
@@ -51,8 +56,7 @@ export const Erro = styled.Text`
   margin-left: 25px;
   margin-top: 15px;
   font-size: 16px;
-  font-weight: bold;
-  color: rgba(255,0,0,255);
+  text-align: center;
 `;
 
 export const IconView = styled.View`

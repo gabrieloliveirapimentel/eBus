@@ -373,7 +373,7 @@ export default function EditProfile ({navigation}){
               onChangeText={(data) => setConfirmaSenha(data)}
             />
             <FormInput
-              icon="computer"
+              icon="school"
               autoCorrect={false}
               value={matricula}
               autoCapitalize="none"

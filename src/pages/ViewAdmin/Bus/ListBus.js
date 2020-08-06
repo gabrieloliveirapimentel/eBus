@@ -6,6 +6,7 @@ import {
   FlatList,
   Text,
   StyleSheet,
+  AsyncStorage,
   View
 } from "react-native";
 import { Fab } from "native-base";
@@ -14,7 +15,8 @@ import { Icon } from "react-native-elements";
 import {Container, Header, Tab} from './styles';
 
 export default function ListBus ({ navigation }) {
-  const {idUsuario} = navigation.state.params;
+  const [email, setEmail] = useState('');
+  const [idUsuario, setIDUsuario] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -22,6 +24,42 @@ export default function ListBus ({ navigation }) {
   const [erro, setErro] = useState('');
 
   function thisList(){}
+
+  async function getItem () {
+    let token = await AsyncStorage.getItem('@eBus:admin');
+    setEmail(token);
+  }
+
+  function thisList() {};
+
+  useEffect(() => {
+    getItem();
+    fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+      .then((response) => response.json())
+      .then((resultado) => {
+        setIDUsuario(resultado.id_usuario);
+      })
+      .catch((error) => {
+        Alert.alert("Erro na conexão!", "Verifique sua internet");
+        setloading(false); 
+      }); 
+    
+  }, [email]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setRefreshing(false);
+    thisList();   
+  }, [refreshing]);
 
   useEffect( 
     thisList = () => {
@@ -40,7 +78,7 @@ export default function ListBus ({ navigation }) {
           
           if (responseJson == 'Nenhum ônibus cadastrado.'){
             setErro('Erro.');
-            Alert.alert('Nenhum ônibus cadastrado!','Faça o cadastrado de ônibus.');
+            setloading(false);
           } else {
             setErro('Sem erro.');
             setdataSource(responseJson);
@@ -50,13 +88,7 @@ export default function ListBus ({ navigation }) {
         Alert.alert('Erro na conexão', 'Verifique sua internet!');
         setloading(false);
       })
-  },[]);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setRefreshing(false);
-    thisList();   
-  }, [refreshing]);
+  },[idUsuario]);
 
   function listSeparator(){
     return (
@@ -78,7 +110,7 @@ export default function ListBus ({ navigation }) {
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: '',
+      title: 'Nenhum ônibus cadastrado!',
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
@@ -119,7 +151,7 @@ export default function ListBus ({ navigation }) {
         data={DATA}
         keyExtractor={item => item.id}
         renderItem={({item}) => (
-          <Text>{item.title}</Text>)}
+          <Text style={{fontSize: 16, color:'rgba(255,0,0,255)', fontWeight:'bold', alignSelf: 'center'}}>{item.title}</Text>)}
         /> 
       );
     }
@@ -146,12 +178,6 @@ export default function ListBus ({ navigation }) {
           position="bottomRight">
           <Icon name="add" color="#fff" />
         </Fab>
-        <Tab 
-          onPress1={() => navigation.navigate('Viagem')} 
-          color1='rgba(255,255,255,0.5)'
-          onPress2={() => {}} 
-          color2='#fff' 
-        />
     </Container>
   );
   }
@@ -166,6 +192,5 @@ const styles = StyleSheet.create({
   },
   fab: {
     backgroundColor: "#283593", 
-    marginBottom: 50 
   }
 });
