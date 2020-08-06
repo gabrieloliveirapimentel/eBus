@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {View, ScrollView, RefreshControl, ActivityIndicator, Alert} from 'react-native';
+import {View, ScrollView, RefreshControl, ActivityIndicator, Alert, AsyncStorage} from 'react-native';
 import {Container, Header, Tab, Form, FormText} from "./styles";
 
-
 export default function Instituicao ({navigation}){
-  const {fkInst} = navigation.state.params;
+  const [email, setEmail] = useState('');
+  const [fkInst, setFKInst] = useState(0);
   const [nome, setNome] = useState('Instituição');
   const [telefone, setTelefone] = useState('Telefone');
   const [idend, setIDend] = useState('');
@@ -17,6 +17,35 @@ export default function Instituicao ({navigation}){
   const [UF, setUF] = useState('UF');
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState('');
+
+  async function getItem () {
+    let token = await AsyncStorage.getItem('@eBus:colab');
+    setEmail(token);
+  }
+
+  useEffect(() => {
+    getItem();
+    fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+    .then((response) => response.json())
+    .then((resultado) => {
+      setFKInst(resultado.fk_Instituicao_id_instituicao);
+      setLoading(false);
+    })
+    .catch((error) => {
+      Alert.alert("Erro na conexão!", "Verifique sua internet");
+      setloading(false); 
+    });  
+  }, [email]);
 
   function goToEdit(){
     navigation.navigate('EditInstituicao',{
@@ -52,7 +81,7 @@ export default function Instituicao ({navigation}){
 
   useEffect(
     thisInst = () => {
-      let mounted = true;
+      setErro('erro');
       fetch('http://ebus.projetoscomputacao.com.br/backend/myInst_api.php',{
         method: 'POST',
           headers: {
@@ -64,8 +93,11 @@ export default function Instituicao ({navigation}){
           }),
       }).then((response) => response.json())
         .then((resultado) => {
-        if (mounted)
-          {
+          if(resultado == 'Nenhum dado encontrado.'){
+            setErro('Erro.');
+            setLoading(false);
+          } else{
+            setErro('Sem erro.'),
             setNome(resultado.nome_instituicao),
             setTelefone(resultado.telefone_instituicao),
             setIDend(resultado.Endereco_id_endereco),
@@ -82,9 +114,8 @@ export default function Instituicao ({navigation}){
           setLoading(false);
           Alert.alert('Erro na conexão', 'Verifique sua internet!');
         })
-    return () => mounted = false;
-    
-  },[]);
+        setErro('Sem erro.');
+  },[erro]);
 
   if (loading == true) {
     return (
@@ -112,12 +143,6 @@ export default function Instituicao ({navigation}){
           </Form>
         </Container>
       </ScrollView>
-      <Tab
-          onPress1={() => navigation.navigate('ViagemColab')}
-          color1="rgba(255,255,255,0.5)"
-          onPress2={() => {}}
-          color2="#fff"
-        />
       </View>
     );
   }

@@ -223,7 +223,7 @@ export default function SignUp ({navigation}){
             onChangeText={(data) => setConfirmaSenha(data)}
           />
           <PickerContainer>
-            <PickerIcon name="school" size={20} color="rgba(0,0,255,1)"/>
+            <PickerIcon name="bank" size={20} color="rgba(0,0,255,1)"/>
             <Picker
               placeholder="Instituição"
               headerBackButtonText="Voltar"
@@ -239,7 +239,7 @@ export default function SignUp ({navigation}){
             </Picker>
           </PickerContainer>
           <FormInput
-            icon="computer"
+            icon="school"
             autoCorrect={false}
             autoCapitalize="none"
             keyboardType="number-pad"
@@ -251,7 +251,7 @@ export default function SignUp ({navigation}){
             icon="call"
             type={"cel-phone"}
             value={telefone}
-            options={{
+            options={{  
               maskType: "BRL",
               withDDD: true,
               dddMask: "(99) ",

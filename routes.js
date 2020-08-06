@@ -3,7 +3,7 @@ import 'react-native-gesture-handler';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-import {Icon} from 'react-native-elements';
+import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 
 /* authStack */
 import SignIn from './src/pages/SignIn/SignIn';
@@ -47,16 +47,7 @@ console.disableYellowBox = true;
 const HorarioStack = createStackNavigator({
   Horario: {
     screen: Horario,
-    navigationOptions: {
-      title: 'Horários',
-      headerStyle: {
-        backgroundColor: '#283593',
-      },
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-  }
+    navigationOptions: { headerShown: false}
   },
 });
 
@@ -80,12 +71,19 @@ const ReservaStack = createStackNavigator({
       },
     },
   },
+})
+
+const ListReservaStack = createStackNavigator({
   ListReserva: {
     screen: ListReserva,
+    navigationOptions: { headerShown: false}
+  },
+  ConfirmReserva: {
+    screen: ConfirmReserva,
     navigationOptions: {
       headerBackTitleVisible: false,
       tabBarVisible: false,
-      title: "Reservas",
+      title: "Reserva",
       headerStyle: {
         backgroundColor: "#283593",
       },
@@ -102,10 +100,25 @@ const MainTabs = createBottomTabNavigator({
     screen: ReservaStack,
     navigationOptions: {
       headerShown: false,
-      tabBarLabel: 'Reserva',
+      tabBarLabel: 'Reservar',
       tabBarIcon: ({tintColor, inactiveTintColor}) => (
       <Icon
-        name="today"
+        name="plus-circle-outline"
+        size={24}
+        color={tintColor}
+        inactiveTintColor={inactiveTintColor}
+      />
+      ),
+    },
+  },
+  Reservas: {
+    screen: ListReservaStack,
+    navigationOptions: {
+      tabBarLabel: 'Reservas',
+      tabBarIcon: ({tintColor, inactiveTintColor}) => (
+      <Icon
+        name="bus"
+        size={24}
         color={tintColor}
         inactiveTintColor={inactiveTintColor}
       />
@@ -118,7 +131,8 @@ const MainTabs = createBottomTabNavigator({
       tabBarLabel: 'Horários',
       tabBarIcon: ({tintColor, inactiveTintColor}) => (
       <Icon
-        name="access-time"
+        name="clock-outline"
+        size={24}
         color={tintColor}
         inactiveTintColor={inactiveTintColor}
       />
@@ -263,15 +277,49 @@ const OnibusStack = createStackNavigator({
   }
 });
 
+const AdminTabs = createBottomTabNavigator({
+  Viagem: {
+    screen: ViagemStack,
+    navigationOptions: {
+      headerShown: false,
+      tabBarLabel: 'Viagem',
+      tabBarIcon: ({tintColor, inactiveTintColor}) => (
+      <Icon
+        name="navigation"
+        size={24}
+        color={tintColor}
+        inactiveTintColor={inactiveTintColor}
+      />
+      ),
+    },
+  },
+  Onibus: {
+    screen: OnibusStack,
+    navigationOptions: {
+      tabBarLabel: 'Ônibus',
+      tabBarIcon: ({tintColor, inactiveTintColor}) => (
+      <Icon
+        name="bus"
+        size={24}
+        color={tintColor}
+        inactiveTintColor={inactiveTintColor}
+      />
+      ),
+    },
+  },
+  },
+  { tabBarOptions: {
+      inactiveTintColor: '#9a9ba5',
+      activeTintColor: '#fff',
+      style: {backgroundColor: '#283593'},
+    },
+  },
+);
 
 const AdminStack2 = createStackNavigator ({
-  ViagemStack: {
-    screen: ViagemStack,
+  Home: {
+    screen: AdminTabs,
     navigationOptions: {headerShown: false},
-  },
-  OnibusStack: {
-    screen: OnibusStack,
-    navigationOptions: {headerShown: false}
   },
   Profile: {
     screen: Profile,
@@ -286,7 +334,7 @@ const AdminStack2 = createStackNavigator ({
       headerTitleStyle: {fontWeight: 'bold'},
     }
   }
-  },{initialRouteName: 'ViagemStack'},
+  },{initialRouteName: 'Home'},
 );
 
 
@@ -343,13 +391,48 @@ const ViagemColabStack = createStackNavigator({
   },
 });
 
-const colabStack2 = createStackNavigator ({
-  ViagemColaborador: {
+const ColabTabs = createBottomTabNavigator({
+  ViagemColab: {
     screen: ViagemColabStack,
-    navigationOptions: {headerShown: false},
+    navigationOptions: {
+      headerShown: false,
+      tabBarLabel: 'Viagem',
+      tabBarIcon: ({tintColor, inactiveTintColor}) => (
+      <Icon
+        name="navigation"
+        size={24}
+        color={tintColor}
+        inactiveTintColor={inactiveTintColor}
+      />
+      ),
+    },
   },
-  Instituicao: {
+  Inst: {
     screen: Instituicao,
+    navigationOptions: {
+      tabBarLabel: 'Instituição',
+      tabBarIcon: ({tintColor, inactiveTintColor}) => (
+      <Icon
+        name="school"
+        size={24}
+        color={tintColor}
+        inactiveTintColor={inactiveTintColor}
+      />
+      ),
+    },
+  },
+  },
+  { tabBarOptions: {
+      inactiveTintColor: '#9a9ba5',
+      activeTintColor: '#fff',
+      style: {backgroundColor: '#283593'},
+    },
+  },
+);
+
+const colabStack2 = createStackNavigator ({
+  Home: {
+    screen: ColabTabs,
     navigationOptions: {headerShown: false},
   },
   EditInstituicao: {
@@ -369,12 +452,12 @@ const colabStack2 = createStackNavigator ({
     screen: EditProfile,
     navigationOptions: {
       title: 'Editar Perfil',
-      headerStyle: { backgroundColor: '#283593'},
+      headerStyle: {backgroundColor: '#283593'},
       headerTintColor: '#fff',
-      headerTitleStyle: { fontWeight: 'bold'},
+      headerTitleStyle: {fontWeight: 'bold'},
     }
   }
-  }, {initialRouteName: 'ViagemColaborador'}
+  },{initialRouteName: 'Home'},
 );
 
 /* entry Navigation */

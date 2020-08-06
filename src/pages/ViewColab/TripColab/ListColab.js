@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { ActivityIndicator, Alert, FlatList, View} from "react-native";
+import { ActivityIndicator, Alert, FlatList, View, AsyncStorage} from "react-native";
 import {Fab, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Container, Header, Tab, Item, ItemView} from "./styles";
+import { Container, Header, Tab, ItemView, Item} from "./styles";
 import moment from 'moment';
 import {format} from 'date-fns';
 
 export default function ListColab({ navigation }) {  
-
-  const {email} = navigation.state.params;
+  const [email, setEmail] = useState('');
   const [idUsuario, setIDUsuario] = useState(0);
-  const [fkInst, setFKInst] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -21,8 +19,13 @@ export default function ListColab({ navigation }) {
 
   function thisList() {};
 
-  useEffect(thisList = () => {
-    setloading(false);
+  async function getItem () {
+    let token = await AsyncStorage.getItem('@eBus:colab');
+    setEmail(token);
+  }
+
+  useEffect(() => {
+    getItem();
     fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
       method: "POST",
       headers: {
@@ -36,13 +39,12 @@ export default function ListColab({ navigation }) {
     .then((response) => response.json())
     .then((resultado) => {
       setIDUsuario(resultado.id_usuario);
-      setFKInst(resultado.fk_Instituicao_id_instituicao);
     })
     .catch((error) => {
       Alert.alert("Erro na conexão!", "Verifique sua internet");
       setloading(false); 
     });  
-  }, []);
+  }, [email]);
 
   function thisList() {};
   
@@ -61,10 +63,10 @@ export default function ListColab({ navigation }) {
       .then((responseJson) => {
         if (responseJson == 'Nenhuma viagem encontrada.'){
           setErro('Erro.');
-          Alert.alert('Nenhuma viagem cadastrada!','Faça o cadastrado de viagens.');
+          setloading(false);
         } else if (responseJson == 'Nenhum dado encontrado.'){
           setErro('Erro.');
-          Alert.alert(responseJson);
+          setloading(false);
         } else {
           setErro('Sem erro.');
           setdataSource(responseJson);
@@ -75,7 +77,7 @@ export default function ListColab({ navigation }) {
         Alert.alert("Erro na conexão!", "Verifique sua internet");
         setloading(false);
       });
-  },[]);
+  },[erro]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -103,7 +105,7 @@ export default function ListColab({ navigation }) {
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: '',
+      title: 'Nenhuma viagem cadastrada!',
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
@@ -171,7 +173,7 @@ export default function ListColab({ navigation }) {
           data={DATA}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <Text>{item.title}</Text>)}
+            <Text style={{fontSize: 16, color:'rgba(255,0,0,255)', fontWeight:'bold', alignSelf: 'center'}}>{item.title}</Text>)}
         />  
       );
     }
@@ -194,16 +196,10 @@ export default function ListColab({ navigation }) {
       <List />
       <Fab
         onPress={() => navigation.navigate("NewColab", { idUsuario: idUsuario })}
-        style={{ backgroundColor: "#283593", marginBottom: 50 }}
+        style={{ backgroundColor: "#283593"}}
         position="bottomRight"
       ><Icon name="add" color="#fff" />
       </Fab>
-      <Tab
-        onPress1={() => {}}
-        color1="#fff"
-        onPress2={() => navigation.navigate('Instituicao',{fkInst: fkInst})}
-        color2="rgba(255,255,255,0.5)"
-      />
       </Container>
     );
   }

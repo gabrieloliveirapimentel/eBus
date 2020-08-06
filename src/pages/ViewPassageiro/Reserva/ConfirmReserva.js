@@ -76,7 +76,7 @@ export default function ConfirmReserva ({navigation}) {
       .then((responseJson) => {
         if (responseJson=='Reserva removida com sucesso!'){
           Alert.alert('Reserva removida!', 'A reserva foi removida com sucesso!');
-          navigation.navigate('Reserva')}
+          navigation.goBack();}
         else{
           Alert.alert(responseJson);
         }          

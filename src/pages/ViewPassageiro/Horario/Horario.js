@@ -5,6 +5,8 @@ import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 import {
   StyleSheet,
   FlatList,
+  ActivityIndicator,
+  AsyncStorage,
   Alert,
   ScrollView,
   RefreshControl,
@@ -13,6 +15,7 @@ import {
 import {
   Container,
   Erro,
+  Header,
   TextHorario,
   PickerContainer,
   PickerIcon,
@@ -24,6 +27,7 @@ import {
 import {addDays, format} from 'date-fns';
 
 export default function Horario ({navigation}){
+  const [idUsuario, setIdUsuario] = useState(0);
   const [OrigemValue, setOrigemValue] = useState('');
   const [DestinoValue, setDestinoValue] = useState('');
   const [dataSource, setdataSource] = useState([]);
@@ -33,6 +37,14 @@ export default function Horario ({navigation}){
   const [refreshing, setRefreshing] = useState(false);
   const [day, setDay] = useState(0);
 
+  async function getItem () {
+    let token = await AsyncStorage.getItem('@eBus:id');
+    setIdUsuario(token);
+  }
+  
+  useEffect(() => {
+    getItem();
+  },[]);
 
   function decrease () {
     setDay(day - 1);
@@ -72,6 +84,7 @@ export default function Horario ({navigation}){
         data: todayData
       }),
     })
+    .then(setlistItem(''), setErro('Carregando...'))
     .then((response) => response.json())
     .then((responseJson) => {
       setlistItem(responseJson.horario);
@@ -141,9 +154,10 @@ export default function Horario ({navigation}){
   }, [refreshing]);
 
   return (
+    <Container>
+    <Header title="Horários" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
     <ScrollView animated='false'contentContainerStyle={{flex:1}} refreshControl={
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-    <Container>
       <PickerContainer>
         <PickerIcon name="map-marker" size={20} color="rgba(0,0,255,0.8)"/>
         <Origem>De:</Origem>
@@ -190,8 +204,9 @@ export default function Horario ({navigation}){
       <Erro>{erro}</Erro>
       <TextHorario>Horários: </TextHorario>
       <List />
-    </Container>
+    
     </ScrollView>
+    </Container>
   );
 }
 

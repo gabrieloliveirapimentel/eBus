@@ -7,15 +7,26 @@ import Background from '../../components/Background';
 import {Form, FormInput, Container, SubmitButton, SignLink, SignLinkText} from './styles';
 
 export default function SignIn ({navigation}){
-  const EMAIL_KEY = "@eBus:email";
+  const [id, setID] = useState(0);
+  const ID_KEY = "@eBus:id";
+  const ADMIN_KEY = "@eBus:admin";
+  const COLAB_KEY = "@eBus:colab";
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState (false);
   const [verificar, setVerificar] = useState (true);
   const [icon, setIcon] = useState('visibility-off');
 
-  function setEmailKey(email){
-    AsyncStorage.setItem(EMAIL_KEY, email);
+  function setIDKey(id){
+    AsyncStorage.setItem(ID_KEY, id);
+  }
+
+  function setAdminKey(email){
+    AsyncStorage.setItem(ADMIN_KEY, email);
+  }
+
+  function setColabKey(email){
+    AsyncStorage.setItem(COLAB_KEY, email);
   }
 
   useEffect (() => {
@@ -24,6 +35,24 @@ export default function SignIn ({navigation}){
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
     })
   },[]);
+
+  function getID(email){
+    fetch('http://ebus.projetoscomputacao.com.br/backend/myID_api.php', {
+      method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+        })
+      }).then((response) => response.json())
+        .then((resultado) => {
+          setIDKey(resultado.id_usuario);        
+        }).catch((error) => {
+          Alert.alert('Erro na conexão!', 'Verifique sua internet');  
+      });
+    }
 
   function fazerLogin () {
     setLoading(true);
@@ -47,18 +76,20 @@ export default function SignIn ({navigation}){
       }).then((response) => response.json())
         .then((responseJson) => {
           if (responseJson == 'Bem-vindo!'){
+            getID(email);
             onSignIn().then(() => {
-              setEmailKey(email);
-              navigation.navigate('Reserva');
+              navigation.navigate('Reserva')
               setLoading(false);
-            })
+            });
           }
           else if (responseJson == 'Administrador'){
-            navigation.navigate('Viagem', {email: email});
+            setAdminKey(email);
+            navigation.navigate('Viagem');
             setLoading(false);
           }
           else if (responseJson == 'Colaborador'){
-            navigation.navigate('ViagemColab',{email: email});
+            setColabKey(email);
+            navigation.navigate('ViagemColab');
             setLoading(false);
           }
           else if (responseJson == 'Senha incorreta, verifique novamente!'){
