@@ -7,7 +7,8 @@ import moment from 'moment';
 import {format} from 'date-fns';
 
 export default function ListColab({ navigation }) {  
-  const [email, setEmail] = useState('');
+  const {email} = navigation.state.params;
+  const [fk, setFK] = useState(0);
   const [idUsuario, setIDUsuario] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
@@ -19,13 +20,8 @@ export default function ListColab({ navigation }) {
 
   function thisList() {};
 
-  async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:colab');
-    setEmail(token);
-  }
-
   useEffect(() => {
-    getItem();
+    setloading(false);
     fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
       method: "POST",
       headers: {
@@ -39,14 +35,13 @@ export default function ListColab({ navigation }) {
     .then((response) => response.json())
     .then((resultado) => {
       setIDUsuario(resultado.id_usuario);
+      setFK(resultado.fk_Instituicao_id_instituicao);
     })
     .catch((error) => {
       Alert.alert("Erro na conexão!", "Verifique sua internet");
       setloading(false); 
     });  
-  }, [email]);
-
-  function thisList() {};
+  }, []);
   
   useEffect(thisList = () => {
     setloading(false);
@@ -57,19 +52,18 @@ export default function ListColab({ navigation }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email
+        email: email,
       }),
     }).then((response) => response.json())
       .then((responseJson) => {
+        setErro('Sem erro.');
+        setdataSource(responseJson);
+        setloading(false);
         if (responseJson == 'Nenhuma viagem encontrada.'){
           setErro('Erro.');
           setloading(false);
         } else if (responseJson == 'Nenhum dado encontrado.'){
           setErro('Erro.');
-          setloading(false);
-        } else {
-          setErro('Sem erro.');
-          setdataSource(responseJson);
           setloading(false);
         }
       })
@@ -77,7 +71,7 @@ export default function ListColab({ navigation }) {
         Alert.alert("Erro na conexão!", "Verifique sua internet");
         setloading(false);
       });
-  },[erro]);
+  },[]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -196,10 +190,16 @@ export default function ListColab({ navigation }) {
       <List />
       <Fab
         onPress={() => navigation.navigate("NewColab", { idUsuario: idUsuario })}
-        style={{ backgroundColor: "#283593"}}
+        style={{ backgroundColor: "#283593", marginBottom: 50 }}
         position="bottomRight"
       ><Icon name="add" color="#fff" />
       </Fab>
+      <Tab
+        onPress1={() => {}}
+        color1="#fff"
+        onPress2={() => navigation.navigate("Inst", {fk: fk})}
+        color2="rgba(255,255,255,0.5)"
+      />
       </Container>
     );
   }

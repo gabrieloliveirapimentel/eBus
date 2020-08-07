@@ -3,8 +3,7 @@ import {View, ScrollView, RefreshControl, ActivityIndicator, Alert, AsyncStorage
 import {Container, Header, Tab, Form, FormText} from "./styles";
 
 export default function Instituicao ({navigation}){
-  const [email, setEmail] = useState('');
-  const [fkInst, setFKInst] = useState(0);
+  const {fk} = navigation.state.params;
   const [nome, setNome] = useState('Instituição');
   const [telefone, setTelefone] = useState('Telefone');
   const [idend, setIDend] = useState('');
@@ -19,37 +18,9 @@ export default function Instituicao ({navigation}){
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
 
-  async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:colab');
-    setEmail(token);
-  }
-
-  useEffect(() => {
-    getItem();
-    fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    })
-    .then((response) => response.json())
-    .then((resultado) => {
-      setFKInst(resultado.fk_Instituicao_id_instituicao);
-      setLoading(false);
-    })
-    .catch((error) => {
-      Alert.alert("Erro na conexão!", "Verifique sua internet");
-      setloading(false); 
-    });  
-  }, [email]);
-
   function goToEdit(){
     navigation.navigate('EditInstituicao',{
-      fkInst: fkInst,
+      fkInst: fk,
       nome: nome,
       telefone: telefone,
       idend: idend,
@@ -89,25 +60,25 @@ export default function Instituicao ({navigation}){
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            fk: fkInst,
+            fk: fk,
           }),
       }).then((response) => response.json())
         .then((resultado) => {
+          setErro('Sem erro.'),
+          setNome(resultado.nome_instituicao),
+          setTelefone(resultado.telefone_instituicao),
+          setIDend(resultado.Endereco_id_endereco),
+          setCEP(resultado.cep),
+          setRua(resultado.rua),
+          setNum(resultado.numero)
+          if (resultado.complemento != '')  { setComplemento(resultado.complemento); }
+          setBairro(resultado.bairro),
+          setCidade(resultado.cidade),
+          setUF(resultado.uf)
+          setLoading(false);
+
           if(resultado == 'Nenhum dado encontrado.'){
             setErro('Erro.');
-            setLoading(false);
-          } else{
-            setErro('Sem erro.'),
-            setNome(resultado.nome_instituicao),
-            setTelefone(resultado.telefone_instituicao),
-            setIDend(resultado.Endereco_id_endereco),
-            setCEP(resultado.cep),
-            setRua(resultado.rua),
-            setNum(resultado.numero)
-            if (resultado.complemento != '')  { setComplemento(resultado.complemento); }
-            setBairro(resultado.bairro),
-            setCidade(resultado.cidade),
-            setUF(resultado.uf)
             setLoading(false);
           }
         }).catch((error) => { 
@@ -115,7 +86,7 @@ export default function Instituicao ({navigation}){
           Alert.alert('Erro na conexão', 'Verifique sua internet!');
         })
         setErro('Sem erro.');
-  },[erro]);
+  },[]);
 
   if (loading == true) {
     return (
@@ -143,6 +114,12 @@ export default function Instituicao ({navigation}){
           </Form>
         </Container>
       </ScrollView>
+      <Tab
+          onPress1={() => navigation.navigate('ViagemColab')}
+          color1="rgba(255,255,255,0.5)"
+          onPress2={() => {}}
+          color2="#fff"
+        />
       </View>
     );
   }

@@ -1,33 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, Alert, StatusBar, AsyncStorage, View, Linking} from 'react-native';
+import {Image, StyleSheet, Alert, StatusBar, View, Linking} from 'react-native';
 import * as Font from 'expo-font';
-import {onSignIn} from '../../services/auth';
 import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 import Background from '../../components/Background';
 import {Form, FormInput, Container, SubmitButton, SignLink, SignLinkText} from './styles';
 
 export default function SignIn ({navigation}){
-  const [id, setID] = useState(0);
-  const ID_KEY = "@eBus:id";
-  const ADMIN_KEY = "@eBus:admin";
-  const COLAB_KEY = "@eBus:colab";
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState (false);
   const [verificar, setVerificar] = useState (true);
   const [icon, setIcon] = useState('visibility-off');
-
-  function setIDKey(id){
-    AsyncStorage.setItem(ID_KEY, id);
-  }
-
-  function setAdminKey(email){
-    AsyncStorage.setItem(ADMIN_KEY, email);
-  }
-
-  function setColabKey(email){
-    AsyncStorage.setItem(COLAB_KEY, email);
-  }
 
   useEffect (() => {
     Font.loadAsync({
@@ -35,24 +18,6 @@ export default function SignIn ({navigation}){
       Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
     })
   },[]);
-
-  function getID(email){
-    fetch('http://ebus.projetoscomputacao.com.br/backend/myID_api.php', {
-      method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-        })
-      }).then((response) => response.json())
-        .then((resultado) => {
-          setIDKey(resultado.id_usuario);        
-        }).catch((error) => {
-          Alert.alert('Erro na conexão!', 'Verifique sua internet');  
-      });
-    }
 
   function fazerLogin () {
     setLoading(true);
@@ -76,31 +41,23 @@ export default function SignIn ({navigation}){
       }).then((response) => response.json())
         .then((responseJson) => {
           if (responseJson == 'Bem-vindo!'){
-            getID(email);
-            onSignIn().then(() => {
-              navigation.navigate('Reserva')
-              setLoading(false);
-            });
+            navigation.navigate('Reserva', {email: email});
+            setLoading(false);
           }
           else if (responseJson == 'Administrador'){
-            setAdminKey(email);
-            navigation.navigate('Viagem');
+            navigation.navigate('Viagem', {email: email});
             setLoading(false);
           }
           else if (responseJson == 'Colaborador'){
-            setColabKey(email);
-            navigation.navigate('ViagemColab');
+            navigation.navigate('ViagemColab', {email: email});
             setLoading(false);
           }
           else if (responseJson == 'Senha incorreta, verifique novamente!'){
             Alert.alert('Senha incorreta!', 'Verifique sua senha e tente novamente.');
-            setSenha('');
             setLoading(false);
           }
           else if (responseJson == 'Dados incorretos, verifique novamente!') {
             Alert.alert('Dados incorretos!', 'Verifique seus dados e tente novamente.');
-            setEmail('');
-            setSenha('');
             setLoading(false);
           } else if (responseJson == 'Conta desativada!'){
             Alert.alert(
