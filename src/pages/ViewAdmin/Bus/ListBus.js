@@ -6,7 +6,6 @@ import {
   FlatList,
   Text,
   StyleSheet,
-  AsyncStorage,
   View
 } from "react-native";
 import { Fab } from "native-base";
@@ -15,45 +14,13 @@ import { Icon } from "react-native-elements";
 import {Container, Header, Tab} from './styles';
 
 export default function ListBus ({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [idUsuario, setIDUsuario] = useState(0);
+  const {idUsuario} = navigation.state.params;
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
   const [erro, setErro] = useState('');
 
   function thisList(){}
-
-  async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:admin');
-    setEmail(token);
-  }
-
-  function thisList() {};
-
-  useEffect(() => {
-    getItem();
-    fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    })
-      .then((response) => response.json())
-      .then((resultado) => {
-        setIDUsuario(resultado.id_usuario);
-      })
-      .catch((error) => {
-        Alert.alert("Erro na conexão!", "Verifique sua internet");
-        setloading(false); 
-      }); 
-    
-  }, [email]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -75,7 +42,6 @@ export default function ListBus ({ navigation }) {
         }),
       }).then((response) => response.json())
         .then((responseJson) => {
-          
           if (responseJson == 'Nenhum ônibus cadastrado.'){
             setErro('Erro.');
             setloading(false);
@@ -88,7 +54,7 @@ export default function ListBus ({ navigation }) {
         Alert.alert('Erro na conexão', 'Verifique sua internet!');
         setloading(false);
       })
-  },[idUsuario]);
+  },[]);
 
   function listSeparator(){
     return (
@@ -178,6 +144,12 @@ export default function ListBus ({ navigation }) {
           position="bottomRight">
           <Icon name="add" color="#fff" />
         </Fab>
+        <Tab 
+          onPress1={() => navigation.navigate('Viagem')} 
+          color1='rgba(255,255,255,0.5)'
+          onPress2={() => {}} 
+          color2='#fff' 
+        />
     </Container>
   );
   }
@@ -192,5 +164,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     backgroundColor: "#283593", 
+    marginBottom: 50 
   }
 });
+

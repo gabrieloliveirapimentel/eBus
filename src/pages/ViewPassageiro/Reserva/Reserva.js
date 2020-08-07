@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { View, StatusBar, Alert, StyleSheet, ScrollView, ActivityIndicator, AsyncStorage, FlatList} from 'react-native';
+import { View, StatusBar, Alert, StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import { Text} from 'native-base';
 import {format} from 'date-fns';
 import moment from 'moment';
@@ -8,9 +8,11 @@ import {
   Header,
   Item,
   ItemView,
+  Tab,
 } from './styles';
 
 export default function Reserva ({navigation}) {
+  const {email} = navigation.state.params;
   const [idUsuario, setIdUsuario] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
@@ -25,22 +27,29 @@ export default function Reserva ({navigation}) {
   const todayData3 = moment(today).format("yyyy-MM-DD",{locale: pt});
   const todayCorrect = todayData3 + ' ' + todayHour;
 
-  function thisList(){}
-
-  async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:id');
-    setIdUsuario(token);
-  }
+  useEffect(() => {
+    fetch('http://ebus.projetoscomputacao.com.br/backend/myID_api.php', {
+      method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+        })
+      }).then((response) => response.json())
+        .then((resultado) => {
+          setIdUsuario(resultado.id_usuario);        
+      }).catch((error) => {
+        Alert.alert('Erro na conexão!', 'Verifique sua internet');  
+    });
+  },[email]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setRefreshing(false);
     thisList();
   }, [refreshing]);
-
-  useEffect(() => {
-    getItem();
-  },[]);
 
   useEffect(thisList = () => {
     setloading(false);
@@ -55,24 +64,23 @@ export default function Reserva ({navigation}) {
       })
       }).then((response) => response.json())
       .then((responseJson) => {
-          if (responseJson == 'Nenhuma viagem encontrada.'){
-            setErro('Erro.');
-            setloading(false);
-          } else if (responseJson == 'Erro na busca de reservas.') {
-            setErro('Erro.');
-            setloading(false);
-          }
-          else {
-            setErro('Sem erro.');
-            setdataSource(responseJson);
-            setloading(false);
-          }
+        if (responseJson == 'Nenhuma viagem encontrada.'){
+          setErro('Erro.');
+          setloading(false);
+        } else if (responseJson == 'Erro na busca de reservas.') {
+          setErro('Erro.');
+          setloading(false);
+        } else {
+          setdataSource(responseJson);
+          setloading(false);
+          setErro('Sem erro.');
         }
+      }
     ).catch((error) => {
       Alert.alert('Erro na conexão!', 'Verifique sua internet!');
       setloading(false);
     })
-  },[erro]);
+  },[]);
 
   function alertReserva(horario, origem, destino){
     return (
@@ -225,10 +233,17 @@ export default function Reserva ({navigation}) {
     return (
       <View style={{flex:1}}>
         <Header title="Reservar" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
-        <Text style={styles.header}>{idUsuario}</Text>
         <Text style={styles.header}>{data}</Text>
         <StatusBar backgroundColor="#283593" barStyle="light-content"/>
         <List />
+        <Tab 
+          onPress1={() => {}}
+          color1="#fff"
+          onPress2={() => navigation.navigate('ListReserva',{idUsuario: idUsuario})}
+          color2="rgba(255,255,255,0.5)"
+          onPress3={() => navigation.navigate('Horario',{idUsuario: idUsuario})}
+          color3="rgba(255,255,255,0.5)"
+        />
       </View>
       );
   }
@@ -249,58 +264,3 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 });
-
-/* DATE PICKER
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Plataform} from 'react-native';
-
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(Platform.OS === 'ios');
-    const formmated = format(currentDate, 'HH:mm');
-    setHorario(formmated);
-    //setShow(false);
-  };
-
-  const showMode = currentMode => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
-  {Platform.OS == 'ios' ? 
-    <View>
-      <FormMaskInput
-        icon3="clock-outline"
-        type={"datetime"}
-        value={horario}
-        options={{
-          format: "HH:mm",
-        }}
-        placeholder="Horario"
-        placeholderTextColor="rgba(0,0,255,0.4)"
-        onChangeText={(data) => setHorario(data)}
-      />
-    </View> : 
-    <View>
-      <FormText icon3="clock-outline" text="Horário:  " text2={horario} icon2="calendar-clock" iconPress={showTimepicker}/>
-    </View>
-  }
-
-  {show && (
-    <DateTimePicker
-      testID="dateTimePicker"
-      value={today}
-      mode={mode}
-      is24Hour={true}
-      display="default"
-      onChange={onChange}
-    />
-  )}
-*/

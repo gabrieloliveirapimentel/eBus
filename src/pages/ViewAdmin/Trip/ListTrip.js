@@ -8,7 +8,7 @@ import moment from 'moment';
 import {format} from 'date-fns';
 
 export default function ListTrip({ navigation }) {
-  const [email, setEmail] = useState('');
+  const {email} = navigation.state.params;
   const [idUsuario, setIDUsuario] = useState(0);
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
@@ -17,16 +17,10 @@ export default function ListTrip({ navigation }) {
 
   const date = new Date();
   const newDate = format(date, 'yyyy-MM-dd');
-  
-  async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:admin');
-    setEmail(token);
-  }
 
   function thisList() {};
 
   useEffect(() => {
-    getItem();
     fetch("http://ebus.projetoscomputacao.com.br/backend/myID_api.php", {
       method: "POST",
       headers: {
@@ -46,7 +40,7 @@ export default function ListTrip({ navigation }) {
         setloading(false); 
       }); 
     
-  }, [email]);
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -69,10 +63,10 @@ export default function ListTrip({ navigation }) {
       .then((responseJson) => {
         if (responseJson == 'Nenhuma viagem encontrada.'){
           setErro('Erro.');
-          setloading(false);
+          Alert.alert('Nenhuma viagem cadastrada!','Faça o cadastrado de viagens.');
         } else if (responseJson == 'Nenhum dado encontrado.'){
           setErro('Erro.');
-          setloading(false);
+          Alert.alert(responseJson);
         } else {
           setErro('Sem erro.');
           setdataSource(responseJson);
@@ -83,7 +77,7 @@ export default function ListTrip({ navigation }) {
         Alert.alert("Erro na conexão!", "Verifique sua internet");
         setloading(false);
       });
-  },[erro]);
+  },[]);
 
   function listSeparator(){
     return (
@@ -192,10 +186,16 @@ export default function ListTrip({ navigation }) {
         <List />
         <Fab
           onPress={() => navigation.navigate("NewTrip", { idUsuario: idUsuario })}
-          style={{ backgroundColor: "#283593"}}
+          style={{ backgroundColor: "#283593", marginBottom: 50 }}
           position="bottomRight"
         ><Icon name="add" color="#fff" />
         </Fab>
+        <Tab
+          onPress1={() => {}}
+          color1="#fff"
+          onPress2={() => navigation.navigate("Onibus", { idUsuario: idUsuario })}
+          color2="rgba(255,255,255,0.5)"
+        />
         </Container>
       );
   }

@@ -4,6 +4,7 @@ import {Platform} from 'react-native';
 import CustomHeader from '../../../components/CustomHeader';
 import Text from '../../../components/FormText';
 import {RectButton} from 'react-native-gesture-handler';
+import TabBar from '../../../components/TabUser';
 
 export const Container = styled.View`
   flex: 1;
@@ -20,12 +21,9 @@ export const Form = styled.View`
   marginTop: 20px;
 `;
 
-export const FormText = styled(Text)`
-`;
-
-
-export const Header = styled(CustomHeader)`
-`;
+export const FormText = styled(Text)``;
+export const Tab = styled(TabBar)``;
+export const Header = styled(CustomHeader)``;
 
 export const SignLink = styled.TouchableOpacity`
   margin-top: 5px;

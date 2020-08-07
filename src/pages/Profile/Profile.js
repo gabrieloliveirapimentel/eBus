@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect, useCallback} from 'react';
-import {ActivityIndicator, ScrollView, View, RefreshControl, Alert, AsyncStorage} from 'react-native';
+import {ActivityIndicator, ScrollView, View, RefreshControl, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {onSignOut} from '../../services/auth';
 import {
   Container,
   CustomHeaderProfile,
@@ -15,7 +14,6 @@ import {
 } from './styles';
 
 export default function Profile ({navigation}){
-  const EMAIL_KEY = "@eBus:email";
   const {idUsuario} = navigation.state.params;
   const [email, setEmail] = useState('');
   const [nome, setNome] = useState('');
@@ -127,18 +125,6 @@ export default function Profile ({navigation}){
     
   },[]);
 
-  function goOut(){
-    AsyncStorage.removeItem(EMAIL_KEY).then(onSignOut().then(() => navigation.navigate('SignIn')));
-  }
-
-  function goOutAdmin(){
-    AsyncStorage.removeItem('@eBus:admin').then(() => navigation.navigate('SignIn'));
-  }
-
-  function goOutColab(){
-    AsyncStorage.removeItem('@eBus:colab').then(() => navigation.navigate('SignIn'));
-  }
-
   function sendtoEditProfile(){
     navigation.navigate('EditProfile',{
       send_id: idUsuario,
@@ -165,46 +151,10 @@ export default function Profile ({navigation}){
       </View>
     );
   } else { 
-    if(admin == 1){
+    if(admin == 1 || colab == 1){
       return (
         <View style={{flex:1}}>
-        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={goOutAdmin} />
-        <ScrollView animated='false' refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          <Container>
-          <Form>
-            <FormText icon3="laptop" text={nome}/>
-            <FormText icon="mail-outline" text={email}/>
-            <FormText icon="call" text={telefone}/>
-            <FormText icon="map" text={CEP}/>
-            <FormText icon="home" text={rua}/>
-            <FormText icon3="numeric-1-box-multiple-outline" text={num}/>
-            <FormText icon3="home-city" text={complemento}/>
-            <FormText icon3="city-variant" text={bairro}/>
-            <FormText icon3="city-variant-outline" text={cidade}/>
-            <FormText icon="public" text={UF}/>
-          </Form>
-          <SignLink>
-            <SubmitButton
-              onPress={sendtoEditProfile}
-            >Editar dados
-            </SubmitButton>
-          </SignLink>
-          <DeleteForm>
-          <Icon name= "delete" color='#f00' size={22}/>
-            <SignLinkText
-              onPress={confirmDel}
-            >Desativar minha conta!
-            </SignLinkText>
-          </DeleteForm>    
-        </Container>
-        </ScrollView>
-        </View>
-      );
-    } else if(colab == 1){
-      return (
-        <View style={{flex:1}}>
-        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={goOutColab} />
+        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')} />
         <ScrollView animated='false' refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <Container>
@@ -240,7 +190,7 @@ export default function Profile ({navigation}){
     } else {
       return (
         <View style={{flex:1}}>
-        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={goOut}/>
+        <CustomHeaderProfile title="Meu Perfil" iconPress={() => navigation.goBack()} iconPress2={() => navigation.navigate('SignIn')}/>
         <ScrollView animated='false' refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <Container>

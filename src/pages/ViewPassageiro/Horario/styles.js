@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import {Platform} from 'react-native';
 import {MaterialCommunityIcons as Icon} from 'react-native-vector-icons';
 import CustomHeader from '../../../components/CustomHeader';
+import TabBar from '../../../components/TabUser';
 
 export const PickerContainer = styled.View`
   flex-direction: row;
@@ -20,9 +21,8 @@ export const PickerIcon = styled(Icon)`
   align-self: center;
 `;
 
-export const Header = styled(CustomHeader)`
-`;
-
+export const Header = styled(CustomHeader)``;
+export const Tab = styled(TabBar)``;
 
 export const Origem = styled.Text`
   align-self: center;

@@ -3,10 +3,10 @@ import { ActivityIndicator, Alert, FlatList, Text, StyleSheet, View, ScrollView,
 import {format} from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
 import moment from 'moment';
-import {ListContainer, ItemView, Header } from './styles';
+import {ListContainer, ItemView, Header, Tab } from './styles';
 
 export default function ListReserva ({navigation}) {
-  const [idUsuario, setIdUsuario] = useState(0);
+  const {idUsuario} = navigation.state.params;
   const [dataSource, setdataSource] = useState([]);
   const [loading, setloading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -21,20 +21,11 @@ export default function ListReserva ({navigation}) {
 
   function thisList(){}
 
-  async function getItem () {
-    let token = await AsyncStorage.getItem('@eBus:id');
-    setIdUsuario(token);
-  }
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setRefreshing(false);
     thisList();   
   }, [refreshing]);
-  
-  useEffect(() => {
-    getItem();
-  },[]);
 
   useEffect( 
     thisList = () => {
@@ -66,7 +57,7 @@ export default function ListReserva ({navigation}) {
         Alert.alert('Erro na conexão', 'Verifique sua internet!');
         setloading(false);
       })
-  },[erro]);
+  },[]);
 
   function removeReserva(idViagem) {
     fetch('http://ebus.projetoscomputacao.com.br/backend/cancelReserva_api.php', {
@@ -134,19 +125,22 @@ export default function ListReserva ({navigation}) {
     );
   } else {
     return (
-      <View style="flex: 1">
+      <ListContainer>
       <Header title="Reservas" icon="person" iconPress={() => navigation.navigate('Profile',{idUsuario: idUsuario})}/>
       <StatusBar backgroundColor="#283593" barStyle="light-content"/>
-      <ScrollView animated='false' refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>  
-        <Text style={styles.header}>{idUsuario}</Text>
         <Text style={styles.header}>Reservas para {data}</Text>
         <List />
-      </ScrollView>
-      </View>
+        <Tab 
+          onPress1={() => navigation.navigate('Reserva',{idUsuario: idUsuario})}
+          color1="rgba(255,255,255,0.5)"
+          onPress2={() => {}}
+          color2="#fff"
+          onPress3={() => navigation.navigate('Horario',{idUsuario: idUsuario})}
+          color3="rgba(255,255,255,0.5)"
+        />
+      </ListContainer>
     );
   }
-  
 }
 
 const styles = StyleSheet.create({
