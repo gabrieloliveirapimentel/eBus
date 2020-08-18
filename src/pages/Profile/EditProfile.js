@@ -35,21 +35,6 @@ export default function EditProfile ({navigation}){
   const {send_UF} = navigation.state.params;
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setNome(send_nome);
-    setEmail(send_email);
-    setMatricula(send_matricula);
-    setTelefone(send_telefone);
-    setNumero(send_num);
-    setComplemento(send_complemento);
-    setCEP(send_CEP);
-    setRua(send_rua);
-    setBairro(send_bairro);
-    setCidade(send_cidade);
-    setUF(send_UF);
-    setLoading(false);
-  },[]);
-
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -63,6 +48,25 @@ export default function EditProfile ({navigation}){
   const [bairro, setBairro] = useState('');
   const [cidade, setCidade] = useState('');
   const [UF, setUF] = useState('');
+
+  useEffect(() => {
+    setNome(send_nome);
+    setEmail(send_email);
+    setMatricula(send_matricula);
+    setTelefone(send_telefone);
+    setNumero(send_num);
+    if (send_complemento == ''){
+      setComplemento('');
+    } else {
+      setComplemento(send_complemento);
+    }
+    setCEP(send_CEP);
+    setRua(send_rua);
+    setBairro(send_bairro);
+    setCidade(send_cidade);
+    setUF(send_UF);
+    setLoading(false);
+  },[]);
 
   const [erro, setErro] = useState(false);
   const [verificar, setVerificar] = useState(true);
@@ -270,13 +274,11 @@ export default function EditProfile ({navigation}){
               placeholderTextColor='rgba(0,0,255,0.4)'
               onChangeText={(data) => setRua(data)}
             />
-            <FormMaskInput
+            <FormInput
               icon3="numeric-1-box-multiple-outline" 
               autoCorrect={false}
               value={numero}
-              type={"custom"}
               keyboardType="number-pad"
-              options={{mask: '99999'}}
               placeholder="Número"
               placeholderTextColor="rgba(0,0,255,0.4)"
               onChangeText={(data) => setNumero(data)}
@@ -284,9 +286,9 @@ export default function EditProfile ({navigation}){
             <FormInput
               icon3="home-city"
               autoCorrect={false}
-              value={complemento}
               autoCapitalize="none"
               placeholder="Complemento"
+              value={complemento}
               placeholderTextColor='rgba(0,0,255,0.4)'
               onChangeText={(data) => setComplemento(data)}
             />
